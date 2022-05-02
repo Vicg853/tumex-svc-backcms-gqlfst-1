@@ -6,8 +6,8 @@
   "scripts": {
     "test": "NODE_ENV=test && echo 'test'",
     "dev": "nodemon ./src/index.ts",
-    "build": "tsc ./src/index.ts",
-    "start": "node dist/index.ts"
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
