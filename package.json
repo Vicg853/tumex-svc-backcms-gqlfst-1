@@ -25,8 +25,8 @@
     "dev": "nodemon",
     "dev:gen": "npx prisma generate --watch",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "prod:prepare": "yarn generate && yarn build"
+    "start": "NODE_ENV=production node dist/index.js",
+    "prod:prepare": "NODE_ENV=build && yarn generate && yarn build"
   },
   "repository": {
     "type": "git",
