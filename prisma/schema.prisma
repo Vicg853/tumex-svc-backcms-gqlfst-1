@@ -1,0 +1,30 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator typegraphql {
+  provider = "typegraphql-prisma"
+  output   = "./generated/type-graphql"
+}
+
+enum ObjectiveProgress {
+   TODO       @map("to-do")
+   INPROGRESS @map("in-progress")
+   DONE       @map("done")
+}
+
+model Objectives {
+  id                   String @id @default(uuid()) @unique
+  createdAt            DateTime @default(now())
+  objectiveProgress    ObjectiveProgress @map("objective_progress") @default(TODO)
+  objectiveSource      String? @map("objective_source") 
+  objectiveName        Json? @map("objective_name_sources")        
+  objectiveDescription Json @map("objective_description_sources")
+
+  @@map("objectives")
+}
