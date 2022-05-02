@@ -5,3 +5,5 @@ node_modules
 .yarn
 
 dist
+
+prisma/generated

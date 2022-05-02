@@ -5,9 +5,12 @@
   "main": "dist/index",
   "scripts": {
     "test": "NODE_ENV=test && echo 'test'",
+    "generate": "npx prisma generate",
     "dev": "nodemon ./src/index.ts",
+    "dev:gen": "npx prisma generate --watch",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prod:prepare": "yarn generate && yarn build"
   },
   "repository": {
     "type": "git",
