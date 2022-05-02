@@ -1,0 +1,51 @@
+{
+  "name": "tumex-svc-backcms-gqlfst-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index",
+  "scripts": {
+    "test": "NODE_ENV=test && echo 'test'",
+    "dev": "nodemon ./src/index.ts",
+    "build": "tsc ./src/index.ts",
+    "start": "node dist/index.ts",
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vicg853/tumex-svc-backcms-gqlfst-1.git"
+  },
+  "keywords": [
+    "api",
+    "grapqhl",
+    "rest",
+    "cms",
+    "prisma",
+    "postgresql"
+  ],
+  "author": "<vicg853@gmail.com, vicg853, Victor Rosa Gomez>",
+  "license": "COPYRIGHT (c) Victor Rosa Gomez 2022-present. All rights reserved.",
+  "bugs": {
+    "url": "https://github.com/Vicg853/tumex-svc-backcms-gqlfst-1/issues"
+  },
+  "homepage": "https://github.com/Vicg853/tumex-svc-backcms-gqlfst-1#readme",
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.13",
+    "@types/graphql": "^14.5.0",
+    "@types/node": "^17.0.31",
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "apollo-server-core": "^3.6.7",
+    "apollo-server-express": "^3.6.7",
+    "class-validator": "^0.13.2",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.1",
+    "graphql": "^16.4.0",
+    "prisma": "^3.13.0",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.1.1",
+    "typegraphql-prisma": "^0.20.1"
+  }
+}
