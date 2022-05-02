@@ -7,7 +7,7 @@
     "test": "NODE_ENV=test && echo 'test'",
     "dev": "nodemon ./src/index.ts",
     "build": "tsc ./src/index.ts",
-    "start": "node dist/index.ts",
+    "start": "node dist/index.ts"
   },
   "repository": {
     "type": "git",
