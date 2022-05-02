@@ -5,10 +5,15 @@ import type { ExpressContext, ServerRegistration } from 'apollo-server-express'
 
 import { config as dotenv } from 'dotenv'
 import { ApolloServer } from 'apollo-server-express'
-import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core'
 import { PrismaClient } from '@prisma/client'
 import express from 'express'
 import http from 'http'
+
+import { 
+   ApolloServerPluginDrainHttpServer,
+   ApolloServerPluginLandingPageGraphQLPlayground,
+   ApolloServerPluginLandingPageDisabled
+} from 'apollo-server-core'
 
 //* Importing the schema
 import { schemaGen } from './schema'
@@ -36,8 +41,14 @@ const httpServerOpt: ListenOptions = {
 const apolloOpts: Config<ExpressContext> = {
    plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
+      process.env.NODE_ENV === 'production' ?
+      ApolloServerPluginLandingPageDisabled() :
+      ApolloServerPluginLandingPageGraphQLPlayground({
+         endpoint: `${ROOT_PATH}graphqli`,
+      })
    ],
-   context: () => ({ prisma })
+   context: () => ({ prisma }),
+   
 }
 const middlewareConfig: Omit<ServerRegistration, 'app'> = {
    path: ROOT_PATH,
