@@ -28,5 +28,5 @@
       ".github", 
       "prisma/generated", 
       "dist"
-   ],
+   ]
 }
