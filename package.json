@@ -24,8 +24,10 @@
     "generate": "npx prisma generate",
     "dev:gen": "npx prisma generate --watch",
     "dev": "nodemon",
-    "build": "NODE_ENV=build tsc",
-    "start": "NODE_ENV=production node dist/index.js"
+    "build": "tsc",
+    "build:paths": "tscpaths -p tsconfig.json -s ./src -o ./dist",
+    "build:all": "yarn build && yarn build:paths",
+    "start": "NODE_ENV=production node dist/src/index.js"
   },
   "repository": {
     "type": "git",
@@ -54,6 +56,7 @@
     "prisma": "3.12.0",
     "ts-node": "^10.7.0",
     "tsconfig-paths": "^4.0.0",
+    "tscpaths": "^0.0.9",
     "typescript": "^4.6.4"
   },
   "dependencies": {
