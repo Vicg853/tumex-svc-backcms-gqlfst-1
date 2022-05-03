@@ -24,6 +24,7 @@ dotenv({
 const PORT: number = parseInt(process.env.PORT ?? '4000', 10)
 const HOST: string = process.env.HOST ?? '0.0.0.0'
 const ROOT_PATH: string = process.env.ROOT_PATH ?? '/'
+const CORS: (string | RegExp)[] = process.env.CORS?.split(',') ?? [/^victorgomez\.dev$/]
 
 //* Main server vars
 const app = express()
@@ -38,6 +39,7 @@ export interface ApolloContext {
 const httpServerOpt: ListenOptions = {
    port: PORT,
    host: HOST,
+   
 }
 const apolloOpts: Config<ExpressContext> = {
    plugins: [
@@ -53,6 +55,9 @@ const apolloOpts: Config<ExpressContext> = {
 }
 const middlewareConfig: Omit<ServerRegistration, 'app'> = {
    path: ROOT_PATH,
+   cors: {
+      origin: CORS,
+   }
 }
 
 
