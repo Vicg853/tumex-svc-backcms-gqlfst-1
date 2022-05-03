@@ -22,9 +22,9 @@
   "scripts": {
     "test": "NODE_ENV=test && echo 'test'",
     "generate": "npx prisma generate",
-    "dev": "nodemon",
     "dev:gen": "npx prisma generate --watch",
-    "build": "NODE_ENV=build && yarn generate && tsc",
+    "dev": "nodemon",
+    "build": "NODE_ENV=build tsc",
     "start": "NODE_ENV=production node dist/index.js"
   },
   "repository": {
