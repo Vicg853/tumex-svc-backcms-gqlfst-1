@@ -25,9 +25,9 @@
     "dev:gen": "npx prisma generate --watch",
     "dev": "nodemon",
     "build": "tsc",
-    "build:paths": "tscpaths -p tsconfig.json -s ./src -o ./dist",
-    "build:all": "yarn build && yarn build:paths",
-    "start": "NODE_ENV=production node dist/src/index.js"
+    "build:paths": "tscpaths -p tsconfig-build-paths.json -s ./dist -o ./dist",
+    "build:all": "yarn generate && yarn build && yarn build:paths",
+    "start": "NODE_ENV=production node dist/index.js"
   },
   "repository": {
     "type": "git",

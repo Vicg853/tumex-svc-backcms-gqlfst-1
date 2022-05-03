@@ -15,9 +15,6 @@ import {
    ApolloServerPluginLandingPageDisabled
 } from 'apollo-server-core'
 
-//* Importing the schema
-import { schemaGen } from './schema'
-
 //* Env init
 dotenv({
    path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
@@ -55,7 +52,7 @@ const middlewareConfig: Omit<ServerRegistration, 'app'> = {
 }
 
 
-async function startServer(
+export async function startServer(
    schema: Config<ExpressContext>['schema']): Promise<void> {
 
    const apolloServer = new ApolloServer({ schema, ...apolloOpts })
@@ -72,8 +69,3 @@ async function startServer(
       })
    })
 }
-
-(async () => {
-   console.log("⬇📴 Starting server...")
-   await startServer(await schemaGen())
-})()
