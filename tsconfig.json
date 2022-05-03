@@ -14,11 +14,20 @@
      "sourceMap": true,
      "baseUrl": ".",
      "paths": {
-        "~/*": ["./src/*"]
+        "~/*": ["./src/*"],
+        "@prisma-gen/*": ["./prisma/generated/*"]
      }
    },
    "include": [
      "./src/**/*",
-     "./types/**/*"
+     "./types/**/*",
+     "index.ts"
+   ],
+   "exclude": [
+      "node_modules", 
+      ".yarn", 
+      ".github", 
+      "prisma/generated", 
+      "dist"
    ]
 }
