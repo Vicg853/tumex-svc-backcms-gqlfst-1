@@ -4,12 +4,12 @@ import { buildSchema } from 'type-graphql'
 import path from 'path'
 
 import {
-   FindManyObjectivesResolver   
-} from "@prisma-gen/type-graphql/index"
+   ObjectivesResolver
+} from './resolvers'
 
 export const schemaGen = async () => await buildSchema({
    resolvers: [
-      FindManyObjectivesResolver
+      ObjectivesResolver
    ],
    emitSchemaFile: path.resolve(__dirname, '../generated-schema.graphql'),
    validate: true

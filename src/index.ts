@@ -30,6 +30,10 @@ const app = express()
 const httpServer = http.createServer(app)
 const prisma = new PrismaClient()
 
+export interface ApolloContext {
+   prisma: PrismaClient
+}
+
 //* Configs
 const httpServerOpt: ListenOptions = {
    port: PORT,
@@ -44,7 +48,7 @@ const apolloOpts: Config<ExpressContext> = {
          endpoint: `${ROOT_PATH}graphqli`,
       })
    ],
-   context: () => ({ prisma }),
+   context: (): ApolloContext => ({ prisma }),
    
 }
 const middlewareConfig: Omit<ServerRegistration, 'app'> = {
