@@ -15,6 +15,8 @@ import {
    ApolloServerPluginLandingPageDisabled
 } from 'apollo-server-core'
 
+import { prisma } from './lib/prisma-client'
+
 //* Env init
 dotenv({
    path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
@@ -29,7 +31,6 @@ const CORS: (string | RegExp)[] = process.env.CORS?.split(',') ?? [/^victorgomez
 //* Main server vars
 const app = express()
 const httpServer = http.createServer(app)
-const prisma = new PrismaClient()
 
 export interface ApolloContext {
    prisma: PrismaClient
