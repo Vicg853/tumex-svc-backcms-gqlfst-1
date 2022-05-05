@@ -15,6 +15,10 @@ import {
    ApolloServerPluginLandingPageDisabled
 } from 'apollo-server-core'
 
+import { prisma } from './lib/prisma-client'
+import { formatError } from './handlers/apollo-response'
+import { context } from './handlers/apollo-context'
+
 //* Env init
 dotenv({
    path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
@@ -29,7 +33,6 @@ const CORS: (string | RegExp)[] = process.env.CORS?.split(',') ?? [/^victorgomez
 //* Main server vars
 const app = express()
 const httpServer = http.createServer(app)
-const prisma = new PrismaClient()
 
 export interface ApolloContext {
    prisma: PrismaClient
@@ -50,8 +53,6 @@ const apolloOpts: Config<ExpressContext> = {
          endpoint: `${ROOT_PATH}graphqli`,
       })
    ],
-   context: (): ApolloContext => ({ prisma }),
-   
 }
 const middlewareConfig: Omit<ServerRegistration, 'app'> = {
    path: ROOT_PATH,
@@ -63,8 +64,12 @@ const middlewareConfig: Omit<ServerRegistration, 'app'> = {
 
 export async function startServer(
    schema: Config<ExpressContext>['schema']): Promise<void> {
-
-   const apolloServer = new ApolloServer({ schema, ...apolloOpts })
+   const apolloServer = new ApolloServer({ 
+      schema: schema!, 
+      context,
+      formatError,
+      ...apolloOpts
+   })
    
    await apolloServer.start()
    apolloServer.applyMiddleware({ app, ...middlewareConfig})
