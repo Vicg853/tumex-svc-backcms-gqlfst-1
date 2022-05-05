@@ -11,7 +11,8 @@ import {
    Field,
    ArgsType,
    InputType,
-   Arg
+   Arg,
+   Authorized,
 } from 'type-graphql'
 
 import { 
@@ -67,6 +68,7 @@ export class ObjectivesResolver {
       return await prisma.objectives.findMany()
    }
 
+   @Authorized("sudo", "is:tumex")
    @Mutation(_returns => Objectives, { nullable: false }) 
    async createObjective(
       @Ctx() { prisma }: ApolloContext,
@@ -80,6 +82,7 @@ export class ObjectivesResolver {
       })
    }
 
+   @Authorized("sudo", "is:tumex")
    @Mutation(_returns => Objectives, { nullable: true }) 
    async modifyObjective(
       @Ctx() { prisma }: ApolloContext,
@@ -101,6 +104,7 @@ export class ObjectivesResolver {
       })
    }
 
+   @Authorized("sudo", "is:tumex")
    @Mutation(_returns => Objectives, { nullable: true }) 
    async deleteObjective(
       @Ctx() { prisma }: ApolloContext,
