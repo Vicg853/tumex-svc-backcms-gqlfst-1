@@ -4,7 +4,8 @@
       "baseUrl": ".",
       "paths": {
          "~/*": ["./dist/src/*"],
-         "@prisma-gen/*": ["./dist/prisma/generated/*"]
+         "@prisma-gen/*": ["./dist/prisma/generated/*"],
+         "@lib/*": ["./dist/src/lib/*"]
       }
    }
 }
