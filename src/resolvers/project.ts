@@ -90,6 +90,15 @@ class MutateProjectArgsData {
 }
 
 @ArgsType()
+class CreateProjectCustomArgs extends MutateProjectArgsData {
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "Sets initial archive state for this project."
+   })
+   archive?: boolean
+}
+
+@ArgsType()
 class ModifyProjectArgs {
    @Field(_type => String, {
       nullable: false,
@@ -102,6 +111,12 @@ class ModifyProjectArgs {
       description: "The project's update data."
    })
    data!: MutateProjectArgsData
+
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true archives the project."
+   })
+   archiveSet?: boolean
 }
 
 
@@ -242,13 +257,14 @@ export class ProjectResolver {
    @Mutation(_returns => ProjectPrismaType, { nullable: false })
    async createProject(
       @Ctx() { prisma }: ApolloContext,
-      @Args() data: MutateProjectArgsData
+      @Args() { archive, ...data }: CreateProjectCustomArgs
       ): Promise<ProjectPrismaType> {
       return await prisma.project.create({
          data: {
             ...data,
             projectStartDate: new Date(data.projectStartDate),
-            projectEndDate: data.projectEndDate ? new Date(data.projectEndDate) : undefined
+            projectEndDate: data.projectEndDate ? new Date(data.projectEndDate) : undefined,
+            isArchived: archive
          }
       })
    }
@@ -257,7 +273,7 @@ export class ProjectResolver {
    @Mutation(_returns => ProjectPrismaType, { nullable: true })
    async updateProject(
       @Ctx() { prisma }: ApolloContext,
-      @Args() { data, id }: ModifyProjectArgs
+      @Args() { data, id, archiveSet }: ModifyProjectArgs
       ): Promise<ProjectPrismaType | null> {
       //* To make things easier the mutation opts-out of using [key]: { set: value } format
       //* so we need to process this data ourselves into prisma format
@@ -272,7 +288,10 @@ export class ProjectResolver {
 
       return await prisma.project.update({
          where: { id },
-         data: uploadData
+         data: {
+            ...uploadData,
+            isArchived: archiveSet
+         }
       })
    }
 
