@@ -6,12 +6,14 @@ import path from 'path'
 import { authChecker } from './auth'
 
 import {
-   ObjectivesResolver
+   ObjectivesResolver,
+   ProjectResolver
 } from './resolvers'
 
 export const schemaGen = async () => await buildSchema({
    resolvers: [
-      ObjectivesResolver
+      ObjectivesResolver,
+      ProjectResolver
    ],
    emitSchemaFile: path.resolve(__dirname, '../generated-schema.graphql'),
    authChecker,
