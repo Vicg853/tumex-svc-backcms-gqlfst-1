@@ -189,13 +189,13 @@ class Project {
    })
    frontmatter!: ProjectFrontMatter
 
-   @Field(_type => [ProjectMetadata], {
+   @Field(_type => ProjectMetadata, {
       nullable: false,
       description: "Project's metadata"
    })
-   metadata!: ProjectMetadata[]
+   metadata!: ProjectMetadata
 
-   @Field(_type => ProjectSource, {
+   @Field(_type => [ProjectSource], {
       nullable: false,
       description: "Project's sources"
    })
