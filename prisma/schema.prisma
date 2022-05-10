@@ -54,8 +54,6 @@ enum SourceTypes {
 type ProjectSource {
   sourceLink String
   sourceType SourceTypes
-  sourceIcon String?
-  sourceText String?
 }
 
 enum ProjectScopes {
@@ -74,10 +72,13 @@ model Project {
   projectDescription   ProjectTextLocales
   
   projectScope         ProjectScopes?
+  topics               String[]
   techStack            TechStack[]
 
   projectStartDate     DateTime
   projectEndDate       DateTime?
 
   sources              ProjectSource[]
+
+  isArchived           Boolean @default(true)
 }
