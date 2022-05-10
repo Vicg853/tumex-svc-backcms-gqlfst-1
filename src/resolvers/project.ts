@@ -207,7 +207,7 @@ class Project {
 
 @Resolver(_of => Project)
 export class ProjectResolver {
-   @Query(_returns => Project, { nullable: true })
+   @Query(_returns => [Project], { nullable: true })
    async getAllProjects(
       @Ctx() { prisma }: ApolloContext
       ): Promise<ProjectsType[] | null> {
