@@ -16,7 +16,6 @@ import {
 
 import { 
    Project as ProjectPrismaType,
-   CreateProjectArgs,
    ProjectTextLocalesCreateInput,
    ProjectTextLocales,
    ProjectScopes,
@@ -198,6 +197,13 @@ class ProjectMetadata {
    isAbstract: true
 })
 class Project {
+   @Authorized("sudo", "is:tumex")
+   @Field(_type => String, {
+      nullable: true,
+      description: "Project's ID. Only returned with proper auth roles."
+   })
+   id?: string
+
    @Field(_type => ProjectFrontMatter, {
       nullable: false,
       description: "Project's front matter"
@@ -250,6 +256,7 @@ export class ProjectResolver {
 
       const projects = rawDBRes.map(project => {
          const projectFormated = {
+            id: project.id,
             frontmatter: {
                image: project.image,
                projectName: project.projectName,
