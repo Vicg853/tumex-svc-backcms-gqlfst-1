@@ -81,4 +81,5 @@ model Project {
   sources              ProjectSource[]
 
   isArchived           Boolean @default(true)
+  isHidden             Boolean @default(false)
 }

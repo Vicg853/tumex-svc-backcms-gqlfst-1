@@ -95,6 +95,12 @@ class CreateProjectCustomArgs extends MutateProjectArgsData {
       description: "Sets initial archive state for this project."
    })
    archive?: boolean
+   
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "Sets initial hide state for this project."
+   })
+   hide?: boolean
 }
 
 @ArgsType()
@@ -116,6 +122,12 @@ class ModifyProjectArgs {
       description: "If true archives the project."
    })
    archiveSet?: boolean
+   
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true hides the project."
+   })
+   visibilitySet?: boolean
 }
 
 
@@ -298,7 +310,7 @@ export class ProjectResolver {
    @Mutation(_returns => ProjectPrismaType, { nullable: true })
    async updateProject(
       @Ctx() { prisma }: ApolloContext,
-      @Args() { data, id, archiveSet }: ModifyProjectArgs
+      @Args() { data, id, archiveSet, visibilitySet }: ModifyProjectArgs
       ): Promise<ProjectPrismaType | null> {
       //* To make things easier the mutation opts-out of using [key]: { set: value } format
       //* so we need to process this data ourselves into prisma format
@@ -315,7 +327,8 @@ export class ProjectResolver {
          where: { id },
          data: {
             ...uploadData,
-            isArchived: archiveSet
+            isArchived: archiveSet,
+            isHidden: visibilitySet
          }
       })
    }
