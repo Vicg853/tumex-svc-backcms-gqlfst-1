@@ -218,16 +218,34 @@ class Project {
 }
 
 
+//* Projects query arg
+@ArgsType()
+class GetAllProjectsArgs {
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true, returns archived and non-archived projects."
+   })
+   includeArchived?: boolean
+
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true, returns only archived projects. Overrides \"includeArchived\"."
+   })
+   onlyArchived?: boolean
+}
 
 
 @Resolver(_of => Project)
 export class ProjectResolver {
    @Query(_returns => [Project], { nullable: true })
    async getAllProjects(
-      @Ctx() { prisma }: ApolloContext
+      @Ctx() { prisma }: ApolloContext, 
+      @Args() { includeArchived, onlyArchived }: GetAllProjectsArgs
       ): Promise<ProjectsType[] | null> {
       const rawDBRes =  await prisma.project.findMany({
-         where: { isArchived: false }
+         where: { 
+            isArchived: onlyArchived || (includeArchived ? undefined : false)
+         },
       })
 
       const projects = rawDBRes.map(project => {
