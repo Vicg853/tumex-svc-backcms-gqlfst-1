@@ -107,10 +107,10 @@ class ModifyProjectArgs {
    id!: string
 
    @Field(_type => MutateProjectArgsData, { 
-      nullable: false,
+      nullable: true,
       description: "The project's update data."
    })
-   data!: MutateProjectArgsData
+   data?: MutateProjectArgsData
 
    @Field(_type => Boolean, {
       nullable: true,
@@ -297,12 +297,12 @@ export class ProjectResolver {
       //* so we need to process this data ourselves into prisma format
 
       //* rawData removes undefined values from the data objects and maps it to the prisma format
-      const rawData = Object.entries(data).filter(([key, value]) => value !== undefined)
-         .map(([key, value]) => ({ [key]: { set: value } }))
+      const rawData = data ? Object.entries(data).filter(([key, value]) => value !== undefined)
+         .map(([key, value]) => ({ [key]: { set: value } })) : undefined
 
       //* uploadData transforms the above rawData array intro an object that prisma can use
       const uploadData: PrismaUpdateProjectArgs['data'] = 
-         Object.assign({}, ...rawData)
+      rawData ? Object.assign({}, ...rawData) : undefined
 
       return await prisma.project.update({
          where: { id },
