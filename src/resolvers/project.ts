@@ -16,7 +16,6 @@ import {
 
 import { 
    Project as ProjectPrismaType,
-   CreateProjectArgs,
    ProjectTextLocalesCreateInput,
    ProjectTextLocales,
    ProjectScopes,
@@ -96,6 +95,12 @@ class CreateProjectCustomArgs extends MutateProjectArgsData {
       description: "Sets initial archive state for this project."
    })
    archive?: boolean
+   
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "Sets initial hide state for this project."
+   })
+   hide?: boolean
 }
 
 @ArgsType()
@@ -107,16 +112,22 @@ class ModifyProjectArgs {
    id!: string
 
    @Field(_type => MutateProjectArgsData, { 
-      nullable: false,
+      nullable: true,
       description: "The project's update data."
    })
-   data!: MutateProjectArgsData
+   data?: MutateProjectArgsData
 
    @Field(_type => Boolean, {
       nullable: true,
       description: "If true archives the project."
    })
    archiveSet?: boolean
+   
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true hides the project."
+   })
+   visibilitySet?: boolean
 }
 
 
@@ -198,6 +209,13 @@ class ProjectMetadata {
    isAbstract: true
 })
 class Project {
+   @Authorized("sudo", "is:tumex")
+   @Field(_type => String, {
+      nullable: true,
+      description: "Project's ID. Only returned with proper auth roles."
+   })
+   id?: string
+
    @Field(_type => ProjectFrontMatter, {
       nullable: false,
       description: "Project's front matter"
@@ -218,20 +236,39 @@ class Project {
 }
 
 
+//* Projects query arg
+@ArgsType()
+class GetAllProjectsArgs {
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true, returns archived and non-archived projects."
+   })
+   includeArchived?: boolean
+
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true, returns only archived projects. Overrides \"includeArchived\"."
+   })
+   onlyArchived?: boolean
+}
 
 
 @Resolver(_of => Project)
 export class ProjectResolver {
    @Query(_returns => [Project], { nullable: true })
    async getAllProjects(
-      @Ctx() { prisma }: ApolloContext
+      @Ctx() { prisma }: ApolloContext, 
+      @Args() { includeArchived, onlyArchived }: GetAllProjectsArgs
       ): Promise<ProjectsType[] | null> {
       const rawDBRes =  await prisma.project.findMany({
-         where: { isArchived: false }
+         where: { 
+            isArchived: onlyArchived || (includeArchived ? undefined : false)
+         },
       })
 
       const projects = rawDBRes.map(project => {
          const projectFormated = {
+            id: project.id,
             frontmatter: {
                image: project.image,
                projectName: project.projectName,
@@ -273,24 +310,25 @@ export class ProjectResolver {
    @Mutation(_returns => ProjectPrismaType, { nullable: true })
    async updateProject(
       @Ctx() { prisma }: ApolloContext,
-      @Args() { data, id, archiveSet }: ModifyProjectArgs
+      @Args() { data, id, archiveSet, visibilitySet }: ModifyProjectArgs
       ): Promise<ProjectPrismaType | null> {
       //* To make things easier the mutation opts-out of using [key]: { set: value } format
       //* so we need to process this data ourselves into prisma format
 
       //* rawData removes undefined values from the data objects and maps it to the prisma format
-      const rawData = Object.entries(data).filter(([key, value]) => value !== undefined)
-         .map(([key, value]) => ({ [key]: { set: value } }))
+      const rawData = data ? Object.entries(data).filter(([key, value]) => value !== undefined)
+         .map(([key, value]) => ({ [key]: { set: value } })) : undefined
 
       //* uploadData transforms the above rawData array intro an object that prisma can use
       const uploadData: PrismaUpdateProjectArgs['data'] = 
-         Object.assign({}, ...rawData)
+      rawData ? Object.assign({}, ...rawData) : undefined
 
       return await prisma.project.update({
          where: { id },
          data: {
             ...uploadData,
-            isArchived: archiveSet
+            isArchived: archiveSet,
+            isHidden: visibilitySet
          }
       })
    }
