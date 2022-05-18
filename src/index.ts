@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import type { RouterOptions } from 'express'
 import type { Config } from 'apollo-server-core'
 import type { ExpressContext, ServerRegistration } from 'apollo-server-express'
 
