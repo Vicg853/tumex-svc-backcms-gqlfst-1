@@ -1,23 +1,19 @@
 import 'reflect-metadata'
-import type { ListenOptions } from 'net'
 import type { Config } from 'apollo-server-core'
 import type { ExpressContext, ServerRegistration } from 'apollo-server-express'
 
 import { config as dotenv } from 'dotenv'
 import { ApolloServer } from 'apollo-server-express'
 import { PrismaClient } from '@prisma/client'
-import express from 'express'
-import http from 'http'
 
 import { 
-   ApolloServerPluginDrainHttpServer,
    ApolloServerPluginLandingPageGraphQLPlayground,
    ApolloServerPluginLandingPageDisabled
 } from 'apollo-server-core'
 
-import { prisma } from './lib/prisma-client'
 import { formatError } from './handlers/apollo-response'
 import { context } from './handlers/apollo-context'
+import { app } from './express'
 
 //* Env init
 dotenv({
@@ -30,28 +26,16 @@ const HOST: string = process.env.HOST ?? '0.0.0.0'
 const ROOT_PATH: string = process.env.ROOT_PATH ?? '/'
 const CORS: (string | RegExp)[] = process.env.CORS?.split(',') ?? [/^victorgomez\.dev$/]
 
-//* Main server vars
-const app = express()
-const httpServer = http.createServer(app)
-
 export interface ApolloContext {
    prisma: PrismaClient
 }
 
-//* Configs
-const httpServerOpt: ListenOptions = {
-   port: PORT,
-   host: HOST,
-   
-}
 const apolloOpts: Config<ExpressContext> = {
    plugins: [
-      ApolloServerPluginDrainHttpServer({ httpServer }),
-      process.env.NODE_ENV === 'production' ?
-      ApolloServerPluginLandingPageDisabled() :
-      ApolloServerPluginLandingPageGraphQLPlayground({
-         endpoint: `${ROOT_PATH}graphqli`,
-      })
+      process.env.NODE_ENV === 'production' ? ApolloServerPluginLandingPageDisabled() 
+         : ApolloServerPluginLandingPageGraphQLPlayground({
+            endpoint: `${ROOT_PATH}graphqli`,
+         }),
    ],
 }
 const middlewareConfig: Omit<ServerRegistration, 'app'> = {
@@ -74,7 +58,7 @@ export async function startServer(
    await apolloServer.start()
    apolloServer.applyMiddleware({ app, ...middlewareConfig})
 
-   await new Promise<void>(resolve => httpServer.listen(httpServerOpt, resolve))
+   await new Promise<void>(resolve => app.listen(PORT, HOST, resolve))
    .then(() => console.log(`🚀 Server ready at http://${HOST}:${PORT}${apolloServer.graphqlPath}`))
    .catch(e => {
       console.error("⬇📴 Shutting down server...")
