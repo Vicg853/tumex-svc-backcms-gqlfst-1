@@ -86,21 +86,27 @@ export class ObjectivesResolver {
    @Mutation(_returns => Objectives, { nullable: true }) 
    async modifyObjective(
       @Ctx() { prisma }: ApolloContext,
-      @Args() { data, id }: UpdateObjectivesArgs): Promise<Objectives> {
+      @Args() { data, id }: UpdateObjectivesArgs): Promise<Objectives | any> {
       //* To make things easier the query does not use [key]: { set: value } format
       //* so we need to process this data ourselves into prisma format
 
       //* rawData removes undefined values from the data objects and maps it to the prisma format
-      const rawData = Object.entries(data).filter(([key, value]) => value !== undefined)
+      const rawData = Object.entries(data)
+         .filter(([key, value]) => value !== undefined && 
+            (key !== 'objectiveDescription' && key !== 'objectiveName'))
          .map(([key, value]) => ({ [key]: { set: value } }))
 
       //* uploadData transforms the above rawData array intro an object that prisma can use
       const uploadData: PrismaUpdateObjectivesArgs['data'] = 
          Object.assign({}, ...rawData)
-      
+
       return await prisma.objectives.update({
          where: { id },
-         data: uploadData
+         data: {
+            ...uploadData,
+            objectiveDescription: data.objectiveDescription,
+            objectiveName: data.objectiveName,
+         }
       })
    }
 
