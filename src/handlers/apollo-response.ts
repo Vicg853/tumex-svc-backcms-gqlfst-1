@@ -33,7 +33,7 @@ export const formatError: Config['formatError'] = (error) => {
       }
    } 
    else if(error.extensions.code === 'P2025') return {
-   message: 'Invalid relation input: One or more of the provided Database relations do not exist or are invalid.',
+   message: 'Invalid relation input: One or more of the provided Database relations do not exist or are invalid. e.g.: Related TechStack id does not exist',
       extensions: {
          code: '424',
          httpCatCode: `${httpCatsUrl}/424`
