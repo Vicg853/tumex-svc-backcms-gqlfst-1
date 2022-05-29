@@ -22,7 +22,8 @@
   },
   "scripts": {
     "test": "NODE_ENV=test && echo 'test'",
-    "generate": "npx prisma generate",
+    "prisma:gen": "npx prisma generate",
+    "prisma:push": "npx prisma db push --skip-generate",
     "dev:gen": "npx prisma generate --watch",
     "dev": "NODE_ENV=development nodemon",
     "dev:all": "yarn dev:gen && NODE_ENV=development nodemon",
