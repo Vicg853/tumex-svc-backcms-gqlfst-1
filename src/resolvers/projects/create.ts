@@ -9,7 +9,7 @@ import {
    ResourceCreateInput
 } from '@prisma-gen/type-graphql'
 
-import { ProjectFullResult } from './queries'
+import { ProjectResultAndRels } from './classes/projectCreate'
 
 @InputType()
 @ArgsType()
@@ -114,7 +114,7 @@ class CreateManyProjectsArgs {
 export class CreateProjectsResolver {
    //TODO Revise auth scopes
    @Authorized("SUDO")
-   @Mutation(_returns => ProjectFullResult, {
+   @Mutation(_returns => ProjectResultAndRels, {
       name: 'createProject',
       nullable: true,
       description: 'Create a new project'
