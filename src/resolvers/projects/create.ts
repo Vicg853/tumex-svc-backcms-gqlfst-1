@@ -1,7 +1,8 @@
 import type { ApolloContext } from '~/index'
 import type { ProjectsFullResultType } from './types'
 
-import { Field, InputType, ArgsType, Resolver, Mutation, Ctx, Args, Authorized } from 'type-graphql'
+import { ApolloError } from 'apollo-server-core'
+import { Field, ArgsType, Resolver, Mutation, Ctx, Args, Authorized } from 'type-graphql'
 import {
    ProjectScopes,
    LocalesCreateInput,
@@ -69,8 +70,7 @@ class CreateProjectArgs {
    @Field(_type => [String], {
       nullable: true
    })
-   relatedTechStackIds?: string[];
-   //TODO add optional field to create and connect techstacks when tech stack mutations are implemented
+   techStackIds?: string[];
 
    @Field(_type => Date, {
       nullable: false,
@@ -94,7 +94,6 @@ class CreateProjectArgs {
    })
    archived?: boolean;
 }
-
 @Resolver()
 export class CreateProjectsResolver {
    //TODO Revise auth scopes
@@ -107,29 +106,55 @@ export class CreateProjectsResolver {
    async createProject(
       @Ctx() ctx: ApolloContext,
       @Args() project: CreateProjectArgs,
-   ): Promise<ProjectsFullResultType | null> {
-      const relatedProjects = project.relatedProjectIds
-      const relatedTechStacks = project.relatedTechStackIds
+   ): Promise<ProjectsFullResultType | null | { extensions: { code: string } }> {
+      const relatedProject = project.relatedProjectIds
+      const relatedTechStacks = project.techStackIds
 
       const data = {
          ...project,
          relatedProjectIds: undefined,
-         relatedTechStackIds: undefined
+         techStackIds: undefined
       }
 
       const create = await ctx.prisma.project.create({
          data: {
             ...data,
             relatedProjects: {
-               connect: relatedProjects ? relatedProjects.map(id => ({ id })) : undefined,
+               create: relatedProject ? relatedProject.map(id => ({
+                  relatedTo: {
+                     connect: {
+                        id
+                     }
+                  }
+               })) : undefined,
             },
             techStack: {
-               connect: relatedTechStacks ? relatedTechStacks.map(id => ({ id })) : undefined,
+               create: relatedTechStacks?.map(id => ({
+                  tech: {
+                     connect: {
+                        id
+                     }
+                  }
+               }))
             }
          },
+      }).then(res => {
+         return {
+            data: res,
+            err: null,
+         }
+      }).catch(err => {
+         return {
+            data: null,
+            err: err.code,
+         }
       })
+      
+      if(!!create.err) 
+         throw new ApolloError(`Project creation failed!`, 
+         create.err ?? 'INTERNAL_SERVER_ERROR')
 
-      return create
+      return create.data
    }
 
 }
