@@ -50,6 +50,7 @@ enum ProjectScopes {
   PROFESSIONAL
   OPENSOURCE
   NONPROFIT
+  SMALL
 }
 
 model TechsInProjects {
