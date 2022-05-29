@@ -73,7 +73,7 @@ model Project {
 
   techStack    Techs[]         @relation("TechInProject", fields: [techStackIds], references: [id])
   techStackIds String[]        @db.ObjectId
-  scopes       ProjectScopes[]
+  scopes       ProjectScopes
   topics       String[]
 
   hidden   Boolean @default(false)
