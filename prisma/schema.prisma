@@ -12,48 +12,36 @@ generator typegraphql {
   output   = "./generated/type-graphql"
 }
 
-//* Objectives models, types, etc
-
-enum ObjectiveProgress {
-   TODO       @map("to-do")
-   INPROGRESS @map("in-progress")
-   DONE       @map("done")
-}
-
-model Objectives {
-  id                   String @id @default(uuid()) @map("_id")
-  createdAt            DateTime @default(now())
-  objectiveProgress    ObjectiveProgress @map("objective_progress") @default(TODO)
-  objectiveSource      String? @map("objective_source") 
-  objectiveName        Json? @map("objective_name_sources")        
-  objectiveDescription Json @map("objective_description_sources")
-
-  @@map("objectives")
-}
-
-//* Projects models, types, etc
-type TechStack {
-  techName             String 
-  techLink             String?
-}
-
-type ProjectTextLocales {
+//* Global types
+type Locales {
   en String
   pt String?
   fr String?
 }
 
-enum SourceTypes {
-  GITHUB
-  WEBSITE
-  MOREINFO
-  RELATED
-  CUSTOM
+//* Objectives models, types, etc
+enum ObjectiveProgress {
+  TODO
+  INPROGRESS
+  DONE
 }
 
-type ProjectSource {
-  sourceLink String
-  sourceType SourceTypes
+model Objectives {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+
+  title       Locales
+  description Locales
+  progress    ObjectiveProgress
+  source      String
+
+  hidden Boolean @default(false)
+}
+
+//* Projects models, types, etc
+type Resource {
+  label String?
+  url   String
 }
 
 enum ProjectScopes {
@@ -64,22 +52,49 @@ enum ProjectScopes {
 }
 
 model Project {
-  id                   String @id @default(uuid()) @map("_id")
-  addedAt              DateTime @default(now())
-  
-  image                String
-  projectName          ProjectTextLocales
-  projectDescription   ProjectTextLocales
-  
-  projectScope         ProjectScopes?
-  topics               String[]
-  techStack            TechStack[]
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
 
-  projectStartDate     DateTime
-  projectEndDate       DateTime?
+  title       Locales
+  description Locales
+  image       String?
 
-  sources              ProjectSource[]
+  ghRepo    String[]
+  website   String[]
+  resources Resource[]
 
-  isArchived           Boolean @default(true)
-  isHidden             Boolean @default(false)
+  relatedProjects   Project[] @relation("HasProjectInterRelation", fields: [relatedProjectsId], references: [id])
+  relatedProjectsId String[]  @db.ObjectId
+  realtedTo         Project[] @relation("HasProjectInterRelation", fields: [realtedToId], references: [id])
+  realtedToId       String[]  @db.ObjectId
+
+  startDate DateTime
+  endDate   DateTime?
+
+  techStack    Techs[]         @relation("TechInProject", fields: [techStackIds], references: [id])
+  techStackIds String[]        @db.ObjectId
+  scopes       ProjectScopes[]
+  topics       String[]
+
+  hidden   Boolean @default(false)
+  archived Boolean @default(false)
+}
+
+//* Technologies models, types, etc
+model Techs {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+
+  name String
+  logo String?
+  url  String?
+
+  aproxProjUse  Int
+  aproxExpYears Int
+
+  usedInProjects    Project[] @relation("TechInProject", fields: [usedInProjectsIds], references: [id])
+  usedInProjectsIds String[]  @db.ObjectId
+
+  listAsSkill Boolean @default(false)
+  hidden      Boolean @default(false)
 }
