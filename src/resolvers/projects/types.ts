@@ -18,7 +18,8 @@ export interface ProjectsFullResultType {
    resources?: Project['resources']
    ghRepo?: Project['ghRepo']
    website?: Project['website']
-   relatedProjects?: ProjectScopes
+   relatedProjects?: ProjectsFullResultType[]
+   relatesTo?: ProjectsFullResultType[]
    techStack?: (Techs|any)[] //TODO don't forget about adding this type TechStack[]
    
    startDate: Project['startDate']
