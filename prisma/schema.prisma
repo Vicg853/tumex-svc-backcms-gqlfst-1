@@ -5,6 +5,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 generator typegraphql {
@@ -51,6 +52,26 @@ enum ProjectScopes {
   NONPROFIT
 }
 
+model TechsInProjects {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tech Techs @relation(fields: [techId], references: [id], onDelete: Cascade)
+  techId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+
+  @@unique([techId, projectId])
+}
+
+model ProjectRelation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  project   Project @relation("Relatee", fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  relatedTo Project @relation("Related", fields: [relatedId], references: [id], onDelete: Cascade)
+  relatedId String
+
+  @@unique([projectId, relatedId])
+}
+
 model Project {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
@@ -63,16 +84,13 @@ model Project {
   website   String[]
   resources Resource[]
 
-  relatedProjects   Project[] @relation("HasProjectInterRelation", fields: [relatedProjectsId], references: [id])
-  relatedProjectsId String[]  @db.ObjectId
-  realtedTo         Project[] @relation("HasProjectInterRelation", fields: [realtedToId], references: [id])
-  realtedToId       String[]  @db.ObjectId
+  relatedProjects   ProjectRelation[] @relation("Relatee")
+  relatedTo         ProjectRelation[] @relation("Related")
 
   startDate DateTime
   endDate   DateTime?
 
-  techStack    Techs[]         @relation("TechInProject", fields: [techStackIds], references: [id])
-  techStackIds String[]        @db.ObjectId
+  techStack    TechsInProjects[]
   scopes       ProjectScopes
   topics       String[]
 
@@ -92,8 +110,7 @@ model Techs {
   aproxProjUse  Int
   aproxExpYears Int
 
-  usedInProjects    Project[] @relation("TechInProject", fields: [usedInProjectsIds], references: [id])
-  usedInProjectsIds String[]  @db.ObjectId
+  inProjects TechsInProjects[]
 
   listAsSkill Boolean @default(false)
   hidden      Boolean @default(false)
