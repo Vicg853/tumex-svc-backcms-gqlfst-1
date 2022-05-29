@@ -2,7 +2,7 @@ import type { ApolloContext } from '~/index'
 import type { ProjectsFullResultType } from './types'
 
 import { ApolloError } from 'apollo-server-core'
-import { Field, ArgsType, Resolver, Mutation, Ctx, Args, Authorized } from 'type-graphql'
+import { Field, InputType, ArgsType, Resolver, Mutation, Ctx, Args, Authorized } from 'type-graphql'
 import {
    ProjectScopes,
    LocalesCreateInput,
@@ -11,8 +11,9 @@ import {
 
 import { ProjectFullResult } from './queries'
 
+@InputType()
 @ArgsType()
-class CreateProjectArgs {
+class BasicProjectArgs {
    @Field(_type => LocalesCreateInput, {
       nullable: false,
       description: 'Project\'s title locales'
@@ -61,17 +62,6 @@ class CreateProjectArgs {
    })
    website?: string[];
 
-   @Field(_type => [String], {
-      nullable: true,
-      description: 'Project\'s other related projects'
-   })
-   relatedProjectIds?: string[];
-
-   @Field(_type => [String], {
-      nullable: true
-   })
-   techStackIds?: string[];
-
    @Field(_type => Date, {
       nullable: false,
       description: 'Project\'s start date'
@@ -94,6 +84,32 @@ class CreateProjectArgs {
    })
    archived?: boolean;
 }
+
+@InputType()
+@ArgsType()
+class CreateProjectArgs extends BasicProjectArgs {
+   @Field(_type => [String], {
+      nullable: true,
+      description: 'Project\'s other related projects'
+   })
+   relatedProjectIds?: string[];
+
+   @Field(_type => [String], {
+      nullable: true
+   })
+   techStackIds?: string[];
+}
+
+@ArgsType()
+class CreateManyProjectsArgs {
+   @Field(_type => [BasicProjectArgs], {
+      nullable: false,
+      description: 'Projects to create'
+   })
+   projects!: BasicProjectArgs[];
+
+}
+
 @Resolver()
 export class CreateProjectsResolver {
    //TODO Revise auth scopes
@@ -157,4 +173,20 @@ export class CreateProjectsResolver {
       return create.data
    }
 
+   @Authorized("SUDO")
+   @Mutation(_returns => Number, {
+      name: 'createManyProjects',
+      nullable: true,
+      description: 'Creates many projects. Return a count of created projects.'
+   })
+   async createManyProjects(
+      @Ctx() ctx: ApolloContext,
+      @Args() { projects }: CreateManyProjectsArgs,
+   ): Promise<number | null | { extensions: { code: string } }> {
+      const create = await ctx.prisma.project.createMany({
+         data: projects
+      })
+
+      return create.count
+   }
 }
