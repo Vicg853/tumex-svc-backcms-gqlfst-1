@@ -41,7 +41,7 @@ export class ProjectFullResult {
    })
    description!: ProjectsFullResultType['description']
 
-   @Field(_type => [ProjectScopes], {
+   @Field(_type => ProjectScopes, {
       nullable: false,
       description: 'Project\'s scope'
    })

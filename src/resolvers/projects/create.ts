@@ -3,8 +3,6 @@ import type { ProjectsFullResultType } from './types'
 
 import { Field, InputType, ArgsType, Resolver, Mutation, Ctx, Args, Authorized } from 'type-graphql'
 import {
-   Locales,
-   Resource,
    ProjectScopes,
    LocalesCreateInput,
    ResourceCreateInput
@@ -26,11 +24,11 @@ class CreateProjectArgs {
    })
    description!: LocalesCreateInput;
   
-   @Field(_type => [ProjectScopes], {
+   @Field(_type => ProjectScopes, {
       nullable: false,
       description: 'Project\'s scopes'
    })
-   scopes!: Array<"PERSONAL" | "PROFESSIONAL" | "OPENSOURCE" | "NONPROFIT">;
+   scopes!: ProjectScopes;
   
    @Field(_type => [String], {
       nullable: true,
@@ -72,6 +70,7 @@ class CreateProjectArgs {
       nullable: true
    })
    relatedTechStackIds?: string[];
+   //TODO add optional field to create and connect techstacks when tech stack mutations are implemented
 
    @Field(_type => Date, {
       nullable: false,
@@ -108,11 +107,26 @@ export class CreateProjectsResolver {
    async createProject(
       @Ctx() ctx: ApolloContext,
       @Args() project: CreateProjectArgs,
-   ): Promise<Omit<ProjectsFullResultType, ''> | null> {
+   ): Promise<ProjectsFullResultType | null> {
+      const relatedProjects = project.relatedProjectIds
+      const relatedTechStacks = project.relatedTechStackIds
+
+      const data = {
+         ...project,
+         relatedProjectIds: undefined,
+         relatedTechStackIds: undefined
+      }
+
       const create = await ctx.prisma.project.create({
          data: {
-            ...project,
-         }
+            ...data,
+            relatedProjects: {
+               connect: relatedProjects ? relatedProjects.map(id => ({ id })) : undefined,
+            },
+            techStack: {
+               connect: relatedTechStacks ? relatedTechStacks.map(id => ({ id })) : undefined,
+            }
+         },
       })
 
       return create

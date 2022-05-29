@@ -1,11 +1,8 @@
 import {
    Project,
-   Techs
+   Techs,
+   ProjectScopes
 } from '@prisma-gen/type-graphql'
-
-import {
-   Locales
-} from '../types'
 
 export interface ProjectsFullResultType {
    id: Project['id'];
@@ -21,7 +18,7 @@ export interface ProjectsFullResultType {
    resources?: Project['resources']
    ghRepo?: Project['ghRepo']
    website?: Project['website']
-   relatedProjects?: ProjectsFullResultType[]
+   relatedProjects?: ProjectScopes
    techStack?: (Techs|any)[] //TODO don't forget about adding this type TechStack[]
    
    startDate: Project['startDate']
