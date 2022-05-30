@@ -64,7 +64,7 @@ export class ProjectResult {
    })
    resources?: Resource[];
 
-   @Field(_type => String, {
+   @Field(_type => [String], {
       nullable: true,
       description: "The project's github repository"
    })
