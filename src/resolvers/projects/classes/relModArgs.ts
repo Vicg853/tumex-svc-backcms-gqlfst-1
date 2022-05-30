@@ -16,12 +16,6 @@ export class ModProjectTechStack {
    //TODO Improve this to include create option when its nested resolver is implemented
    @Field(_type => [String], {
       nullable: true,
-      description: "The project's tech stack"
-   })
-   techID!: string[]
-
-   @Field(_type => [String], {
-      nullable: true,
       description: "Append new techs to the project's tech stack"
    })
    appendTechID!: string[]
@@ -33,29 +27,10 @@ export class ModProjectTechStack {
    omitTechID!: string[]
 }
 
-@InputType('ModifyProjectToProjectRelation', {
+@InputType('ModifyProjectToProjectAsRelatee', {
    isAbstract: true
 })
-export class ModProjToProjRelation {
-   //TODO Improve this to include create option when its nested resolver is implemented
-   @Field(_type => [String], {
-      nullable: true,
-      description: "The project's tech stack"
-   })
-   relatedProjects?: string[]
-
-   @Field(_type => [String], {
-      nullable: true,
-      description: "The project's tech stack"
-   })
-   relateeTo?: string[]
-
-   @Field(_type => [String], {
-      nullable: true,
-      description: "Push new related projects to related array"
-   })
-   pushRelatedProjects?: string[]
-
+export class ModProjToProjAsRelatee {
    @Field(_type => [String], {
       nullable: true,
       description: "Push as relatee to other projects"
@@ -64,14 +39,26 @@ export class ModProjToProjRelation {
 
    @Field(_type => [String], {
       nullable: true,
-      description: "Omit related projects from related array"
+      description: "Omit as relatee to one or many other project(s)"
    })
-   omitRelatedProjects?: string[]
+   omitAsRelateeTo?: string[]
+}
+
+@InputType('ModifyProjectToProjectRelated', {
+   isAbstract: true
+})
+export class ModProjToProjRelated {
+   //TODO Improve this to include create option when its nested resolver is implemented
+   @Field(_type => [String], {
+      nullable: true,
+      description: "Push new related projects to related array"
+   })
+   pushRelatedProjects?: string[]
 
    @Field(_type => [String], {
       nullable: true,
-      description: "Omit as relatee to other projects"
+      description: "Omit related projects from related array"
    })
-   omitAsRelateeTo?: string[]
+   omitRelatedProjects?: string[]
 }
 

@@ -5,42 +5,44 @@ import {
    ResourceCreateInput,
    LocalesCreateInput,
    ProjectScopes,
+   ProjectCreatetopicsInput
 } from '@prisma-gen/type-graphql'
 import {
-   ModProjToProjRelation,
+   ModProjToProjRelated,
+   ModProjToProjAsRelatee,
    ModProjectTechStack
 } from './relModArgs'
 
-function arrayModifyCreate<T extends ClassType>(fieldName: string, FielClassType: T) {
+export interface ArrayModifyInputClassType {
+   setTo: any[]
+   append: any[]
+   omit: any[]
+}
+function arrayModifyCreate<U>(fieldName: string, FielClassType: ClassType) {
    @InputType(`${fieldName}ModifyInput`, { isAbstract: true })
    abstract class ArrayModifyInputTypeClass {
       @Field(_type => [FielClassType], {
          nullable: true,
          description: `Set ${fieldName} resource array to`
       })
-      setTo?: T[] 
+      set?: U[] 
    
    
       @Field(_type => [FielClassType], {
          nullable: true,
          description: `Append new project's ${fieldName}`
       })
-      append?: T[]
-   
-      @Field(_type => [FielClassType], {
-         nullable: true,
-         description: `Omit project's ${fieldName}`
-      })
-      omit?: T[]
+      push?: U[]
    }
 
    return ArrayModifyInputTypeClass
 }
 
 
-const ProjectResourceMod = arrayModifyCreate('resource', ResourceCreateInput)
-const GhRepoMod = arrayModifyCreate('ghRepo', String)
-const WebsiteMod = arrayModifyCreate('website', String)
+const ProjectResourceMod = arrayModifyCreate<ResourceCreateInput>('resource', ResourceCreateInput)
+const TopicsMod = arrayModifyCreate<string>('topic', String)
+const GhRepoMod = arrayModifyCreate<string>('ghRepo', String)
+const WebsiteMod = arrayModifyCreate<string>('website', String)
 
 @InputType('ModifyProjectsData', {
    isAbstract: true
@@ -64,11 +66,11 @@ export class ModProjectData {
    })
    scopes!: ProjectsFullResultType['scopes']
 
-   @Field(_type => [String], {
+   @Field(_type => TopicsMod, {
       nullable: true,
       description: 'Project\'s topics (e.g.: Backend, Frontend, etc.)'
    })
-   topics?: ProjectsFullResultType['topics']
+   topics?: InstanceType<typeof TopicsMod>
 
    @Field(_type => String, {
       nullable: true,
@@ -95,10 +97,10 @@ export class ModProjectData {
    website?: InstanceType<typeof WebsiteMod>;
 
    @Field(_type => Date, {
-      nullable: false,
+      nullable: true,
       description: 'Project\'s start date'
    })
-   startDate!: ProjectsFullResultType['startDate'];
+   startDate?: ProjectsFullResultType['startDate'];
 
    @Field(_type => Date, {
       nullable: true,
@@ -106,11 +108,17 @@ export class ModProjectData {
    })
    endDate?: ProjectsFullResultType['endDate']
 
-   @Field(_type => ModProjToProjRelation, {
+   @Field(_type => ModProjToProjRelated, {
       nullable: true,
-      description: 'Project\'s to project relation updates'
+      description: 'Update project\'s list related to the current one.'
    })
-   projectToProjectRelUpdate?: ModProjToProjRelation
+   relatedProjectsUpdate?: ModProjToProjRelated
+   
+   @Field(_type => ModProjToProjAsRelatee, {
+      nullable: true,
+      description: 'Update project\'s list of project this one is a relatee of.'
+   })
+   relateeToProjectsUpdate?: ModProjToProjAsRelatee
 
    @Field(_type => ModProjectTechStack, {
       nullable: true,
