@@ -162,13 +162,12 @@ export class CreateProjectsResolver {
       }).catch(err => {
          return {
             data: null,
-            err: err.code,
+            err: err.code ?? 'INTERNAL_SERVER_ERROR',
          }
       })
       
       if(!!create.err) 
-         throw new ApolloError(`Project creation failed!`, 
-         create.err ?? 'INTERNAL_SERVER_ERROR')
+         throw new ApolloError(`Project creation failed!`, create.err)
 
       return create.data
    }
