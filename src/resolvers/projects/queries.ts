@@ -3,7 +3,7 @@ import type { ApolloContext } from '~/index'
 import Fields from 'graphql-fields'
 import { Info, Resolver, Query, Ctx, Args } from 'type-graphql'
 
-import { ProjectResultAndRels } from './classes/projectCreate'
+import { ProjectResultAndRels } from './classes/queryFields'
 import { OpacityRelatedProjectArgs, ProjectQueryArgs } from './classes/queryArgs'
 
 @Resolver()

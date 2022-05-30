@@ -9,7 +9,7 @@ import {
    ResourceCreateInput
 } from '@prisma-gen/type-graphql'
 
-import { ProjectResultAndRels } from './classes/projectCreate'
+import { ProjectResultAndRels } from './classes/queryFields'
 
 @InputType()
 @ArgsType()
