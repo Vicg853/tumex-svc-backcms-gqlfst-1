@@ -1,28 +1,58 @@
 import type { ProjectsFullResultType } from '../types'
 
-import { Authorized, ObjectType, Field, ArgsType, InputType } from 'type-graphql'
+import { Field, ArgsType, InputType, ClassType } from 'type-graphql'
 import {
-   Resource,
-   Locales,
+   ResourceCreateInput,
+   LocalesCreateInput,
    ProjectScopes,
-   Techs
 } from '@prisma-gen/type-graphql'
 import {
    ModProjToProjRelation,
    ModProjectTechStack
 } from './relModArgs'
 
+function arrayModifyCreate<T extends ClassType>(fieldName: string, FielClassType: T) {
+   @InputType(`${fieldName}ModifyInput`, { isAbstract: true })
+   abstract class ArrayModifyInputTypeClass {
+      @Field(_type => [FielClassType], {
+         nullable: true,
+         description: `Set ${fieldName} resource array to`
+      })
+      setTo?: T[] 
+   
+   
+      @Field(_type => [FielClassType], {
+         nullable: true,
+         description: `Append new project's ${fieldName}`
+      })
+      append?: T[]
+   
+      @Field(_type => [FielClassType], {
+         nullable: true,
+         description: `Omit project's ${fieldName}`
+      })
+      omit?: T[]
+   }
+
+   return ArrayModifyInputTypeClass
+}
+
+
+const ProjectResourceMod = arrayModifyCreate('resource', ResourceCreateInput)
+const GhRepoMod = arrayModifyCreate('ghRepo', String)
+const WebsiteMod = arrayModifyCreate('website', String)
+
 @InputType('ModifyProjectsData', {
    isAbstract: true
 })
 export class ModProjectData {
-   @Field(_type => Locales, {
+   @Field(_type => LocalesCreateInput, {
       nullable: true,
       description: "The project's title"
    })
    title!: ProjectsFullResultType['title']
 
-   @Field(_type => Locales, {
+   @Field(_type => LocalesCreateInput, {
       nullable: true,
       description: "The project's description"
    })
@@ -46,23 +76,23 @@ export class ModProjectData {
    })
    image!: ProjectsFullResultType['image']
 
-   @Field(_type => [Resource], {
+   @Field(_type => ProjectResourceMod, {
       nullable: true,
       description: 'Project\'s related resources'
-   })
-   resources?: Resource[];
+   }) 
+   resources?: InstanceType<typeof ProjectResourceMod>;
 
-   @Field(_type => String, {
+   @Field(_type => GhRepoMod, {
       nullable: true,
       description: "The project's github repository"
    })
-   ghRepo!: ProjectsFullResultType['ghRepo']
+   ghRepo!: InstanceType<typeof GhRepoMod>
 
-   @Field(_type => [String], {
+   @Field(_type => WebsiteMod, {
       nullable: true,
       description: 'Project\'s websites'
    })
-   website?: ProjectsFullResultType['website']
+   website?: InstanceType<typeof WebsiteMod>;
 
    @Field(_type => Date, {
       nullable: false,
