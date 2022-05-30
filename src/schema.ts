@@ -7,13 +7,15 @@ import { authChecker } from './auth'
 
 import {
    CreateProjectsResolver,
-   ProjectsQueriesResolver
+   ProjectsQueriesResolver,
+   ModifyProjectsResolver
 } from './resolvers/projects'
 
 export const schemaGen = async () => await buildSchema({
    resolvers: [
       CreateProjectsResolver,
-      ProjectsQueriesResolver
+      ProjectsQueriesResolver,
+      ModifyProjectsResolver
    ],
    emitSchemaFile: path.resolve(__dirname, '../generated-schema.graphql'),
    authChecker,
