@@ -39,6 +39,14 @@ export const formatError: Config['formatError'] = (error) => {
          httpCatCode: `${httpCatsUrl}/424`
       }
    }
+   else if(error.extensions.code === '406') return {
+      message: `Invalid input: ${error.message}`,
+      extensions: {
+         code: '406',
+         httpCatCode: `${httpCatsUrl}/406`
+      }
+
+   }
 
    return defaultErr
 }
