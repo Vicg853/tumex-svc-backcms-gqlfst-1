@@ -45,8 +45,22 @@ export const formatError: Config['formatError'] = (error) => {
          code: '406',
          httpCatCode: `${httpCatsUrl}/406`
       }
-
    }
+   else if (error.extensions.code === 'P2023') return {
+      message: 'Invalid input created column inconsistency in the database. E.g.: Project id is invalid',
+      extensions: {
+         code: '406',
+         httpCatCode: `${httpCatsUrl}/406`
+      }
+   }
+   else if (error.extensions.code === 'P2002') return {
+      message: `Unique constraint failed on the: ${error.message}`,
+      extensions: {
+         code: '409',
+         httpCatCode: `${httpCatsUrl}/409`
+      }
+   }
+
 
    return defaultErr
 }
