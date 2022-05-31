@@ -39,25 +39,27 @@ export class ProjectsQueriesResolver {
          select: { id: false, tech: true, techId: false, project: false, projectId: false }
       } } : undefined
 
+      const noneDefined = !showRelatedProjs && !showRelatedTo && !showTechStack
+
       const prisma = await ctx.prisma.project.findMany({
          where: {
             archived: onlyArchived || (includeArchived ? undefined : false),
             hidden: onlyHidden || (includeHidden ? undefined : false)
          },
-         include: {
+         ...(noneDefined && {include: {
             ...showRelatedProjs as unknown as { relatedProjects: { select: { relatedTo: true } } },
             ...showRelatedTo as unknown as { relatedTo: { select: { project: true } } },
             ...showTechStack as unknown as { techStack: { select: { tech: true } }},
-         }
+         }})
       })
 
       return prisma.map(project => ({
          ...project,
-         relatedProject: showRelatedProjs ? 
+         relatedProject: showRelatedProjs ? //@ts-ignore
             project.relatedProjects.map(childProj => ({ ...childProj['relatedTo'] })) : undefined,
-         techStack: showTechStack ? 
+         techStack: showTechStack ? //@ts-ignore
             project.techStack.map(tech => ({ ...tech['tech'] })) : undefined,
-         relatedTo: showRelatedTo ? 
+         relatedTo: showRelatedTo ? //@ts-ignore
             project.relatedTo.map(childProj => ({ ...childProj['project'] })) : undefined,
       }))
    }
@@ -90,16 +92,18 @@ export class ProjectsQueriesResolver {
          select: { id: false, tech: true, techId: false, project: false, projectId: false }
       } } : undefined
 
+      const noneDefined = !showRelatedProjs && !showRelatedTo && !showTechStack
+
       const res = await ctx.prisma.project.findUnique({
          where: {
             id, 
          },
          rejectOnNotFound: false,
-         include: {
+         ...(noneDefined && {include: {
             ...showRelatedProjs as unknown as { relatedProjects: { select: { relatedTo: true } } },
             ...showRelatedTo as unknown as { relatedTo: { select: { project: true } } },
             ...showTechStack as unknown as { techStack: { select: { tech: true } }},
-         }
+         }})
       })
 
       if (!res || (res.hidden && !includeHidden)) {
@@ -108,9 +112,12 @@ export class ProjectsQueriesResolver {
 
       return {
          ...res,
-         relatedProject: showRelatedProjs ? res.relatedProjects.map(proj => ({ ...proj['relatedTo'] })) : undefined,
-         techStack: showTechStack ? res.techStack.map(tech => ({ ...tech['tech'] })) : undefined,
-         relatedTo: showRelatedTo ? res.relatedTo.map(proj => ({ ...proj['project'] })) : undefined,
+         relatedProject: showRelatedProjs ? //@ts-ignore
+            res.relatedProjects.map(proj => ({ ...proj['relatedTo'] })) : undefined,
+         techStack: showTechStack ? //@ts-ignore
+            res.techStack.map(tech => ({ ...tech['tech'] })) : undefined,
+         relatedTo: showRelatedTo ?  //@ts-ignore
+            res.relatedTo.map(proj => ({ ...proj['project'] })) : undefined,
       }
    }
 }
