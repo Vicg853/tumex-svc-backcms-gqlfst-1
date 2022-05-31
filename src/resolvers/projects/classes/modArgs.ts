@@ -173,3 +173,24 @@ export class ModProjectArgs {
    })
    opacityUpdate?: ProjectOpacityRelatedUpdates
 }
+
+@ArgsType()
+export class ModProjectsOpacityArgs {
+   @Field(_type => [String], {
+      nullable: true,
+      description: 'Project(s)\'s ids to modify. If not provided, all projects will be modified!'
+   })
+   ids?: string[]
+
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: 'Project(s)\'s visibility'
+   })
+   hidden?: boolean
+
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: 'Project(s)\'s archive state'
+   })
+   archived?: boolean
+}

@@ -4,23 +4,24 @@ import type {
 } from '@prisma/client'
 
 import { ApolloError } from 'apollo-server-core'
-import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql'
+import { Arg, Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql'
 
 import {
-   ProjectResult
+   ProjectResult,
+   ProjectResultAndRels
 } from './classes/queryFields'
 import { 
-   ModProjectArgs, 
-   ModProjectData
+   ModProjectArgs,
+   ModProjectsOpacityArgs
 } from './classes/modArgs'
 
 @Resolver()
 export class ModifyProjectsResolver {
    //TODO: Revise auth scopes
-   @Authorized("SUDO")
-   @Mutation(_returns => ProjectResult, {
+   @Authorized('SUDO')
+   @Mutation(_returns => ProjectResultAndRels, {
       nullable: true,
-      description: "Modify a project"
+      description: 'Modify a project'
    })
    async modProject(
       @Ctx() ctx: ApolloContext,
@@ -40,44 +41,46 @@ export class ModifyProjectsResolver {
       || data?.relateeProjectsUpdate?.pushAsRelateeTo?.includes(id))
          throw new ApolloError('You can relate a project to itself!', '406')
 
+      //TODO Add related projects and tech stack query to the mutation result query when inherited 
+      //! resolver is ready
       //TODO fix issue where a project can become a relatee to a already realtedProject
-      const prisma = await ctx.prisma.project.update({
+      const prismaRes = await ctx.prisma.project.update({
          where: { id },
          data: {
             ...opacityUpdate,
             ...dataFilter,
-            relatedProjects: data!.relatedProjectsUpdate ? {
-               ...(data!.relatedProjectsUpdate!.pushRelatedProjects && {
-                  create: data!.relatedProjectsUpdate!.pushRelatedProjects!.map(id => ({
+            relatedProjects: data?.relatedProjectsUpdate ? {
+               ...(data.relatedProjectsUpdate.pushRelatedProjects && {
+                  create: data.relatedProjectsUpdate.pushRelatedProjects!.map(id => ({
                      relatedTo: { connect: { id } }
                   })),
                }),
-               ...(data!.relatedProjectsUpdate!.omitRelatedProjects && {
-                  deleteMany: data!.relatedProjectsUpdate!.omitRelatedProjects!.map(relatedId => ({
+               ...(data.relatedProjectsUpdate.omitRelatedProjects && {
+                  deleteMany: data.relatedProjectsUpdate.omitRelatedProjects!.map(relatedId => ({
                      relatedId
                   })),
                }),
             } : undefined,
-            relatedTo: data!.relateeProjectsUpdate ? {
-               ...(data!.relateeProjectsUpdate!.pushAsRelateeTo && {
-                  create: data!.relateeProjectsUpdate!.pushAsRelateeTo!.map(id => ({
+            relatedTo: data?.relateeProjectsUpdate ? {
+               ...(data.relateeProjectsUpdate.pushAsRelateeTo && {
+                  create: data.relateeProjectsUpdate.pushAsRelateeTo!.map(id => ({
                      project: { connect: { id } }
                   }))
                }),
-               ...(data!.relateeProjectsUpdate!.omitAsRelateeTo && {
-                  deleteMany: data!.relateeProjectsUpdate!.omitAsRelateeTo!.map(projectId => ({
+               ...(data.relateeProjectsUpdate.omitAsRelateeTo && {
+                  deleteMany: data.relateeProjectsUpdate.omitAsRelateeTo!.map(projectId => ({
                      projectId
                   }))
                })
             } : undefined,
-            techStack: data!.techStackUpdate ? {
-               ...(data!.techStackUpdate!.appendTechID && {
-                  create: data!.techStackUpdate!.appendTechID.map(id => ({
+            techStack: data?.techStackUpdate ? {
+               ...(data.techStackUpdate.appendTechID && {
+                  create: data.techStackUpdate!.appendTechID.map(id => ({
                      tech: { connect: { id } }
                   }))
                }),
-               ...(data!.techStackUpdate!.omitTechID && {
-                  deleteMany: data!.techStackUpdate!.omitTechID.map(techId => ({
+               ...(data.techStackUpdate.omitTechID && {
+                  deleteMany: data.techStackUpdate.omitTechID.map(techId => ({
                      techId
                   }))
                })
@@ -93,10 +96,47 @@ export class ModifyProjectsResolver {
          err: err.code ?? 'INTERNAL_SERVER_ERROR',
       }))
 
-      if(prisma.err) 
-         throw new ApolloError(prisma.message, prisma.err)
+      if(prismaRes.err) 
+         throw new ApolloError(prismaRes.message, prismaRes.err)
 
-      return prisma.data
+      return prismaRes.data
    }
+   
+   @Authorized('SUDO')
+   @Mutation(_returns => String, {
+      nullable: true,
+      description: 'Modify one or many projects opacity'
+   })
+   async modProjectsOpacity(
+      @Ctx() ctx: ApolloContext,
+      @Args() { 
+         ids, archived, hidden 
+      }: ModProjectsOpacityArgs,
+   ): Promise<string | null> {
+      const prismaRes = await ctx.prisma.project.updateMany({
+         ...(ids && { where: {
+            id: {
+               in: ids,
+            }
+         }}),
+         data: {
+            archived,
+            hidden,
+         }
+      }).then(res => ({
+         count: res.count,
+         message: null,
+         err: null,
+      }))
+      .catch(err => ({
+         count: 0,
+         message: err.meta.target ?? 'Project update failed with unknown error!',
+         err: err.code ?? 'INTERNAL_SERVER_ERROR',
+      }))
 
+      if(prismaRes.err)
+         throw new ApolloError(prismaRes.message, prismaRes.err)
+
+      return `Successfully updated ${prismaRes.count.toString()} project`
+   }
 }
