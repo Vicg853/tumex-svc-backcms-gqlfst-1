@@ -32,18 +32,19 @@ export class ModifyProjectsResolver {
       const dataFilter = {
          ...data,
          relatedProjectsUpdate: undefined,
-         relateeToProjectsUpdate: undefined,
-         projectTechStackUpdate: undefined,
+         relateeProjectsUpdate: undefined,
+         techStackUpdate: undefined,
       }
 
       if(data?.relatedProjectsUpdate?.pushRelatedProjects?.includes(id)
-      || data?.relateeToProjectsUpdate?.pushAsRelateeTo?.includes(id))
+      || data?.relateeProjectsUpdate?.pushAsRelateeTo?.includes(id))
          throw new ApolloError('You can relate a project to itself!', '406')
 
       //TODO fix issue where a project can become a relatee to a already realtedProject
       const prisma = await ctx.prisma.project.update({
          where: { id },
          data: {
+            ...opacityUpdate,
             ...dataFilter,
             relatedProjects: data!.relatedProjectsUpdate ? {
                ...(data!.relatedProjectsUpdate!.pushRelatedProjects && {
@@ -57,26 +58,26 @@ export class ModifyProjectsResolver {
                   })),
                }),
             } : undefined,
-            relatedTo: data!.relateeToProjectsUpdate ? {
-               ...(data!.relateeToProjectsUpdate!.pushAsRelateeTo && {
-                  create: data!.relateeToProjectsUpdate!.pushAsRelateeTo!.map(id => ({
+            relatedTo: data!.relateeProjectsUpdate ? {
+               ...(data!.relateeProjectsUpdate!.pushAsRelateeTo && {
+                  create: data!.relateeProjectsUpdate!.pushAsRelateeTo!.map(id => ({
                      project: { connect: { id } }
                   }))
                }),
-               ...(data!.relateeToProjectsUpdate!.omitAsRelateeTo && {
-                  deleteMany: data!.relateeToProjectsUpdate!.omitAsRelateeTo!.map(projectId => ({
+               ...(data!.relateeProjectsUpdate!.omitAsRelateeTo && {
+                  deleteMany: data!.relateeProjectsUpdate!.omitAsRelateeTo!.map(projectId => ({
                      projectId
                   }))
                })
             } : undefined,
-            techStack: data!.projectTechStackUpdate ? {
-               ...(data!.projectTechStackUpdate!.appendTechID && {
-                  create: data!.projectTechStackUpdate!.appendTechID.map(id => ({
+            techStack: data!.techStackUpdate ? {
+               ...(data!.techStackUpdate!.appendTechID && {
+                  create: data!.techStackUpdate!.appendTechID.map(id => ({
                      tech: { connect: { id } }
                   }))
                }),
-               ...(data!.projectTechStackUpdate!.omitTechID && {
-                  deleteMany: data!.projectTechStackUpdate!.omitTechID.map(techId => ({
+               ...(data!.techStackUpdate!.omitTechID && {
+                  deleteMany: data!.techStackUpdate!.omitTechID.map(techId => ({
                      techId
                   }))
                })

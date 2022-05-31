@@ -1,6 +1,6 @@
 import type { ProjectsFullResultType } from '../types'
 
-import { Field, ArgsType, InputType, ClassType } from 'type-graphql'
+import { Field, ArgsType, InputType, ClassType, Authorized } from 'type-graphql'
 import {
    ResourceCreateInput,
    LocalesCreateInput,
@@ -107,7 +107,12 @@ export class ModProjectData {
       description: 'Project\'s end date. Leave undefined in case project is still ongoing.'
    })
    endDate?: ProjectsFullResultType['endDate']
+}
 
+@InputType('ModifyOnlyProjectsData', {
+   isAbstract: true
+})
+class ProjectAndRelationsModData extends ModProjectData {
    @Field(_type => ModProjToProjRelated, {
       nullable: true,
       description: 'Update project\'s list related to the current one.'
@@ -118,22 +123,29 @@ export class ModProjectData {
       nullable: true,
       description: 'Update project\'s list of project this one is a relatee of.'
    })
-   relateeToProjectsUpdate?: ModProjToProjAsRelatee
+   relateeProjectsUpdate?: ModProjToProjAsRelatee
 
    @Field(_type => ModProjectTechStack, {
       nullable: true,
       description: 'Project\'s tech stack updates'
    })
-   projectTechStackUpdate?: ModProjectTechStack
+   techStackUpdate?: ModProjectTechStack
 }
 
+@InputType('ModifyProjectOpacity', {
+   isAbstract: true
+})
 class ProjectOpacityRelatedUpdates {
+   //TODO Check auth scopes
+   @Authorized("is:tumex")
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Project\'s visibility'
    })
-   visibility?: boolean
+   hidden?: boolean
 
+   //TODO Check auth scopes
+   @Authorized("is:tumex")
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Project\'s archive state'
@@ -149,13 +161,13 @@ export class ModProjectArgs {
    })
    id!: string
 
-   @Field(_type => ModProjectData, {
+   @Field(_type => ProjectAndRelationsModData, {
       nullable: true,
       description: "The project's data to modify"
    })
-   data?: ModProjectData
+   data?: ProjectAndRelationsModData
 
-   @Field(_type => [String], {
+   @Field(_type => ProjectOpacityRelatedUpdates, {
       nullable: true,
       description: 'Project\'s opacity related updates'
    })
