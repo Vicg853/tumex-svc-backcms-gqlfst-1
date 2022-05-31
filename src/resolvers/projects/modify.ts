@@ -36,6 +36,11 @@ export class ModifyProjectsResolver {
          projectTechStackUpdate: undefined,
       }
 
+      if(data?.relatedProjectsUpdate?.pushRelatedProjects?.includes(id)
+      || data?.relateeToProjectsUpdate?.pushAsRelateeTo?.includes(id))
+         throw new ApolloError('You can relate a project to itself!', '406')
+
+      //TODO fix issue where a project can become a relatee to a already realtedProject
       const prisma = await ctx.prisma.project.update({
          where: { id },
          data: {
@@ -47,8 +52,8 @@ export class ModifyProjectsResolver {
                   })),
                }),
                ...(data!.relatedProjectsUpdate!.omitRelatedProjects && {
-                  deleteMany: data!.relatedProjectsUpdate!.omitRelatedProjects!.map(id => ({
-                     id
+                  deleteMany: data!.relatedProjectsUpdate!.omitRelatedProjects!.map(relatedId => ({
+                     relatedId
                   })),
                }),
             } : undefined,
@@ -77,21 +82,18 @@ export class ModifyProjectsResolver {
                })
             } : undefined,
          }
-      }).then(res => {
-         return {
-            data: res,
-            err: null,
-         }
-      }).catch(err => {
-         console.log(err)
-         return {
-            data: null,
-            err: err.code ?? 'INTERNAL_SERVER_ERROR',
-         }
-      })
+      }).then(res => ({
+         data: res,
+         message: null,
+         err: null,
+      })).catch(err => ({
+         data: null,
+         message: err.meta.target ?? 'Project update failed with unknown error!',
+         err: err.code ?? 'INTERNAL_SERVER_ERROR',
+      }))
 
       if(prisma.err) 
-         throw new ApolloError('Project update failed!', prisma.err)
+         throw new ApolloError(prisma.message, prisma.err)
 
       return prisma.data
    }
