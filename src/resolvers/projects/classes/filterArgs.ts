@@ -6,7 +6,7 @@ import {
 @InputType('ProjectGlobalFilters', {
    isAbstract: true
 })
-export class ProjGlobalFilterArgs {
+export class ProjGlobalFilterArgsInputT {
    @Field(_type => Boolean, {
       nullable: true,
       description: "If true, returns archived and non-archived projects."
@@ -35,3 +35,6 @@ export class ProjGlobalFilterArgs {
    })
    includeHidden?: boolean
 }
+
+@ArgsType()
+export class ProjGlobalFilterArgsType extends ProjGlobalFilterArgsInputT {}

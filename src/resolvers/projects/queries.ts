@@ -5,7 +5,7 @@ import { Info, Resolver, Query, Ctx, Args } from 'type-graphql'
 
 import { ProjectResultAndRels } from './classes/queryFields'
 import { ProjectQueryArgs } from './classes/queryArgs'
-import { ProjGlobalFilterArgs } from './classes/filterArgs'
+import { ProjGlobalFilterArgsType } from './classes/filterArgs'
 
 @Resolver()
 export class ProjectsQueriesResolver {
@@ -18,7 +18,7 @@ export class ProjectsQueriesResolver {
       @Args() { 
          includeArchived, onlyArchived,
          includeHidden, onlyHidden
-      }: ProjGlobalFilterArgs,
+      }: ProjGlobalFilterArgsType,
       @Info() info: any
    ): Promise<ProjectResultAndRels[]> {
        //TODO Improve this when its inheritance resolvers is ready

@@ -1,10 +1,10 @@
 import { Authorized, ArgsType, Field } from 'type-graphql'
 import {
-   ProjGlobalFilterArgs   
+   ProjGlobalFilterArgsInputT   
 } from './filterArgs'
 
 @ArgsType()
-export class ProjectQueryArgs extends ProjGlobalFilterArgs {
+export class ProjectQueryArgs extends ProjGlobalFilterArgsInputT {
    @Field(_type => String, {
       nullable: false,
       description: "The project's id"
