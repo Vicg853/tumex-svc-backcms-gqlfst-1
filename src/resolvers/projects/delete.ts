@@ -27,7 +27,7 @@ export class DeleteProjectsResolver {
             }
          }
       }).then(res => ({
-         count: res,
+         count: res.count,
          err: null,
          message: null,
       }))
@@ -40,7 +40,7 @@ export class DeleteProjectsResolver {
       if(prismaRes.err)
          throw new ApolloError(prismaRes.message, prismaRes.err)
 
-      return prismaRes.message ?? null
+      return `Deleted ${prismaRes.count} project(s)`
    }
    
    @Authorized('SUDO')
@@ -85,7 +85,7 @@ export class DeleteProjectsResolver {
             ]
          }
       }).then(res => ({
-         count: res,
+         count: res.count,
          err: null,
          message: null,
       }))
@@ -98,6 +98,6 @@ export class DeleteProjectsResolver {
       if(prismaRes.err)
          throw new ApolloError(prismaRes.message, prismaRes.err)
 
-      return prismaRes.message ?? null
+      return `Deleted ${prismaRes.count} project relation(s)`
    }
 }

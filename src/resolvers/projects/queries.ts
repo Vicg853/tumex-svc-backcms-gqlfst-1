@@ -4,7 +4,8 @@ import Fields from 'graphql-fields'
 import { Info, Resolver, Query, Ctx, Args } from 'type-graphql'
 
 import { ProjectResultAndRels } from './classes/queryFields'
-import { OpacityRelatedProjectArgs, ProjectQueryArgs } from './classes/queryArgs'
+import { ProjectQueryArgs } from './classes/queryArgs'
+import { ProjGlobalFilterArgsType } from './classes/filterArgs'
 
 @Resolver()
 export class ProjectsQueriesResolver {
@@ -15,9 +16,8 @@ export class ProjectsQueriesResolver {
    async projects(
       @Ctx() ctx: ApolloContext,
       @Args() { 
-         includeArchived, onlyArchived,
-         includeHidden, onlyHidden
-      }: OpacityRelatedProjectArgs,
+         filters
+      }: ProjGlobalFilterArgsType,
       @Info() info: any
    ): Promise<ProjectResultAndRels[]> {
        //TODO Improve this when its inheritance resolvers is ready
@@ -43,15 +43,16 @@ export class ProjectsQueriesResolver {
 
       const prisma = await ctx.prisma.project.findMany({
          where: {
-            archived: onlyArchived || (includeArchived ? undefined : false),
-            hidden: onlyHidden || (includeHidden ? undefined : false)
+            archived: filters?.onlyArchived || (filters?.includeArchived ? undefined : false),
+            hidden: filters?.onlyHidden || (filters?.includeHidden ? undefined : false)
          },
-         ...(noneDefined && {include: {
+         ...(!noneDefined && {include: {
             ...showRelatedProjs as unknown as { relatedProjects: { select: { relatedTo: true } } },
             ...showRelatedTo as unknown as { relatedTo: { select: { project: true } } },
             ...showTechStack as unknown as { techStack: { select: { tech: true } }},
          }})
       })
+
 
       return prisma.map(project => ({
          ...project,
@@ -93,13 +94,13 @@ export class ProjectsQueriesResolver {
       } } : undefined
 
       const noneDefined = !showRelatedProjs && !showRelatedTo && !showTechStack
-
+      
       const res = await ctx.prisma.project.findUnique({
          where: {
             id, 
          },
          rejectOnNotFound: false,
-         ...(noneDefined && {include: {
+         ...(!noneDefined && {include: {
             ...showRelatedProjs as unknown as { relatedProjects: { select: { relatedTo: true } } },
             ...showRelatedTo as unknown as { relatedTo: { select: { project: true } } },
             ...showTechStack as unknown as { techStack: { select: { tech: true } }},
