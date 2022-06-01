@@ -7,30 +7,12 @@ import {
    ProjectResult,
 } from './classes/queryFields'
 import { 
-   ProjectRelateesQueryFields,
-} from './classes/relQueryFields'
-import { 
-   PorjectRelateeArgs, 
    ProjToProjRelationArgs,
    GroupByEnum
 } from './classes/relQueryArgs'
 
 @Resolver()
 export class ProjectsRelationQueryResolver {
-   @Query(_type => ProjectRelateesQueryFields, {
-      nullable: true,
-      description: 'Get all projects'
-   })
-   async projectRelatees(
-      @Ctx() ctx: ApolloContext,
-      @Args() { 
-         project, relatees, 
-         filters
-      }: PorjectRelateeArgs
-   ): Promise<ProjectRelateesQueryFields | null> {
-      return null  
-   }
-
    @Query(_type => ProjectResult, {
       nullable: true,
       description: 'Get all project relations'

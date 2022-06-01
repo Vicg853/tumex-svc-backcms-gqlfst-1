@@ -8,44 +8,6 @@ import {
 } from './filterArgs'
 
 @InputType()
-class ProjectRelateesFilterArgs extends ProjGlobalFilterArgsInputT {
-   @Field(_type => Boolean, {
-      nullable: true,
-      description: 'Include or not archived relatees'
-   })
-   includeArchivedRelatees?: boolean
-
-   //TODO Revise auth scopes
-   @Authorized('SUDO')
-   @Field(_type => Boolean, {
-      nullable: true,
-      description: 'Include or not hidden relatees'
-   })
-   includeHiddenRelatees?: boolean
-}
-
-@ArgsType()
-export class PorjectRelateeArgs {
-   @Field(_type => String, {
-      nullable: false,
-      description: 'Queried project\'s id'
-   })
-   project!: string
-
-   @Field(_type => String, {
-      nullable: true,
-      description: 'Project\'s relatees id to query for. All relatees are returned if not specified.'
-   })
-   relatees?: string[]
-
-   @Field(_type => ProjectRelateesFilterArgs, {
-      nullable: true,
-      description: 'Optionla query filters'
-   })
-   filters?: ProjectRelateesFilterArgs
-}
-
-@InputType()
 class ProjToProjRelationFilters extends ProjGlobalFilterArgsInputT {
    @Field(_type => Boolean, {
       nullable: true,
@@ -75,7 +37,6 @@ class ProjToProjRelationFilters extends ProjGlobalFilterArgsInputT {
    })
    onlyHiddenRelated?: boolean
 }
-
 
 export enum GroupByEnum {
    PROJECT,
