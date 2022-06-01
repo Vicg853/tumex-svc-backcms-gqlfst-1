@@ -1,14 +1,14 @@
-import { ArgsType, Authorized, Field, InputType } from 'type-graphql'
+import { ArgsType, Authorized, Field, InputType, registerEnumType } from 'type-graphql'
 import {
    ProjectResult
 } from './queryFields'
 
 import {
-   ProjGlobalFilterArgs
+   ProjGlobalFilterArgsInputT
 } from './filterArgs'
 
 @InputType()
-class ProjectRelateesFilterArgs extends ProjGlobalFilterArgs {
+class ProjectRelateesFilterArgs extends ProjGlobalFilterArgsInputT {
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Include or not archived relatees'
@@ -46,7 +46,7 @@ export class PorjectRelateeArgs {
 }
 
 @InputType()
-class ProjToProjRelationFilters extends ProjGlobalFilterArgs {
+class ProjToProjRelationFilters extends ProjGlobalFilterArgsInputT {
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Include or not archived related or relatee projects (based on grouping mthod)'
@@ -76,17 +76,30 @@ class ProjToProjRelationFilters extends ProjGlobalFilterArgs {
    onlyHiddenRelated?: boolean
 }
 
+
 export enum GroupByEnum {
    PROJECT,
    PROJECTRELATEES,
    NOGROUP
 }
+registerEnumType(GroupByEnum, {
+   name: 'ProjectRelationGroupingEnum',
+   description: 'Grouping method for projects and their relatees',
+})
 
 @ArgsType()
-export class ProjToProjRelationArgs extends ProjToProjRelationFilters {
+export class ProjToProjRelationArgs {
    @Field(_type => GroupByEnum, {
       nullable: true,
-      description: 'Group results'
+      description: 'Group results',
+      defaultValue: GroupByEnum.NOGROUP
    })
    group?: GroupByEnum
+
+   @Field(_type => ProjToProjRelationFilters, {
+      nullable: true,
+      description: 'Optional query filters'
+   })
+   filters?: ProjToProjRelationFilters
+
 }
