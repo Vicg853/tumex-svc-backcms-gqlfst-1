@@ -1,7 +1,4 @@
 import { ArgsType, Authorized, Field, InputType } from 'type-graphql'
-import {
-   ProjectResult
-} from './queryFields'
 
 @InputType('ProjectGlobalFilters', {
    isAbstract: true
@@ -37,4 +34,10 @@ export class ProjGlobalFilterArgsInputT {
 }
 
 @ArgsType()
-export class ProjGlobalFilterArgsType extends ProjGlobalFilterArgsInputT {}
+export class ProjGlobalFilterArgsType {
+   @Field(_type => ProjGlobalFilterArgsInputT, {
+      nullable: true,
+      description: "Optional query filters"
+   })
+   filters?: ProjGlobalFilterArgsInputT
+}

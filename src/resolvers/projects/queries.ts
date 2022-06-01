@@ -16,8 +16,7 @@ export class ProjectsQueriesResolver {
    async projects(
       @Ctx() ctx: ApolloContext,
       @Args() { 
-         includeArchived, onlyArchived,
-         includeHidden, onlyHidden
+         filters
       }: ProjGlobalFilterArgsType,
       @Info() info: any
    ): Promise<ProjectResultAndRels[]> {
@@ -44,8 +43,8 @@ export class ProjectsQueriesResolver {
 
       const prisma = await ctx.prisma.project.findMany({
          where: {
-            archived: onlyArchived || (includeArchived ? undefined : false),
-            hidden: onlyHidden || (includeHidden ? undefined : false)
+            archived: filters?.onlyArchived || (filters?.includeArchived ? undefined : false),
+            hidden: filters?.onlyHidden || (filters?.includeHidden ? undefined : false)
          },
          ...(!noneDefined && {include: {
             ...showRelatedProjs as unknown as { relatedProjects: { select: { relatedTo: true } } },
