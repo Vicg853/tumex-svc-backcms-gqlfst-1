@@ -36,6 +36,8 @@ model Objectives {
   progress    ObjectiveProgress
   source      String
 
+  year        Int
+
   hidden Boolean @default(false)
 }
 
