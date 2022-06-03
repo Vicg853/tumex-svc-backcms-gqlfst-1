@@ -63,3 +63,30 @@ export class ObjectiveQueryFields {
    })
    hidden?: ObjectiveMainType['hidden']
 }  
+
+@ObjectType()
+export class GroupedObjectivesQueryFields {
+   @Field(_type => Number, {
+      nullable: true,
+      description: 'Get year group value. Null if not grouped by year.'
+   })
+   year?: number
+
+   @Field(_type => ObjectiveProgress, {
+      nullable: true,
+      description: 'Get progress group value. Null if not grouped by progress.'
+   })
+   progress?: ObjectiveMainType['progress']
+
+   @Field(_type => String, {
+      nullable: true,
+      description: 'Get source group value. Null if not grouped by source.'
+   })
+   source?: ObjectiveMainType['source']
+
+   @Field(_type => [ObjectiveQueryFields], {
+      nullable: true,
+      description: 'Get objectives for the following group(s) methods.'
+   })
+   objectives?: ObjectiveQueryFields[]
+}
