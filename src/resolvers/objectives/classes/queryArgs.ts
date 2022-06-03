@@ -27,10 +27,13 @@ export class ManyObjectivesQueryArgs {
       description: 'Applied filters'
    })
    filters?: ObjectivesGlobalFilter
+}
 
+@ArgsType()
+export class ManyObjectivesGroupQueryArgs {
    @Field(_type => [ObjectivesGroupByFieldEnum], {
       nullable: true,
-      description: 'Grouping by rule'
+      description: 'Grouping pattern'
    })
    group?: ObjectivesGroupByFieldEnum[]
 }
