@@ -9,10 +9,6 @@ import {
    Ctx
 } from 'type-graphql'
 
-import {
-   CreateObjectiveArgs
-} from './classes/createArgs'
-
 @Resolver()
 export class ObjectiveRemoveResolvers {
    @Authorized('SUDO')
