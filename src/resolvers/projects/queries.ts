@@ -13,7 +13,7 @@ export class ProjectsQueriesResolver {
       nullable: true,
       description: 'Get all projects'
    })
-   async projects(
+   async getManyProjects(
       @Ctx() ctx: ApolloContext,
       @Args() { 
          filters
@@ -72,7 +72,7 @@ export class ProjectsQueriesResolver {
       nullable: true,
       description: 'Get a project by id'
    })
-   async project(
+   async getProject(
       @Ctx() ctx: ApolloContext,
       @Args() {id, includeHidden}: ProjectQueryArgs,
       @Info() info: any
