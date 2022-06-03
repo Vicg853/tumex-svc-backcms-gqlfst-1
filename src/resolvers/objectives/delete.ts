@@ -18,7 +18,9 @@ export class ObjectiveRemoveResolvers {
    })
    async removeObjectives(
       @Ctx() ctx: ApolloContext,
-      @Arg('ids') ids: string[]
+      @Arg('ids', _type => [String], {
+         description: 'Objective\'s(\') ID(s) to remove'
+      }) ids: string[]
    ): Promise<string> {
       const prismaRes = await ctx.prisma.objectives.deleteMany({
          where: {
