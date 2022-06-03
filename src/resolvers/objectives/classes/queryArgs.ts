@@ -1,25 +1,12 @@
 import { 
    ArgsType,
    Authorized,
-   Field,
-   registerEnumType
+   Field
 } from 'type-graphql'
 
 import {
    ObjectivesGlobalFilter
 } from './filterArgs'
-
-
-export enum ObjectivesGroupByFieldEnum {
-   progress = "progress",
-   source = "source",
-   year = "year"
- }
- registerEnumType(ObjectivesGroupByFieldEnum, {
-   name: "ObjectivesGroupByFieldEnum",
-   description: undefined,
- });
-
 @ArgsType()
 export class ManyObjectivesQueryArgs {
    @Field(_type => ObjectivesGlobalFilter, {
@@ -27,15 +14,6 @@ export class ManyObjectivesQueryArgs {
       description: 'Applied filters'
    })
    filters?: ObjectivesGlobalFilter
-}
-
-@ArgsType()
-export class ManyObjectivesGroupQueryArgs {
-   @Field(_type => [ObjectivesGroupByFieldEnum], {
-      nullable: true,
-      description: 'Grouping pattern'
-   })
-   group?: ObjectivesGroupByFieldEnum[]
 }
 
 @ArgsType()
