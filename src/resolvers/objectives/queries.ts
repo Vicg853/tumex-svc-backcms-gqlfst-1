@@ -6,8 +6,9 @@ import {
    ObjectiveQueryFields 
 } from './classes/queryFields'
 import { 
-   ManyObjectivesQueryArgs ,
-   QueryOneObjectiveArgs
+   ManyObjectivesQueryArgs,
+   QueryOneObjectiveArgs,
+   ObjectivesGroupByFieldEnum
 } from './classes/queryArgs'
 
 @Resolver()
@@ -18,10 +19,8 @@ export class ObjectivesQueriesResolver {
    })
    async getManyObjectives(
       @Ctx() ctx: ApolloContext,
-      @Args() { 
-         filters, group
-      }: ManyObjectivesQueryArgs
-   ) {
+      @Args() { filters }: ManyObjectivesQueryArgs
+   ): Promise<ObjectiveQueryFields[] | null> {
       const prismaRes = await ctx.prisma.objectives.findMany({
          where: {
             ...filters,
@@ -41,11 +40,8 @@ export class ObjectivesQueriesResolver {
 
       if(prismaRes.err) 
          throw new ApolloError(prismaRes.message, prismaRes.err)
-
-      //TODO: Don't forget about grouping
-      console.log(JSON.stringify(prismaRes.data, null, 2))
-
-      return prismaRes.data
+      
+      return prismaRes.data!
    }
 
    @Query(_type => ObjectiveQueryFields, {
@@ -79,6 +75,7 @@ export class ObjectivesQueriesResolver {
          return null
 
       return prismaRes.data!
-
    }
+
+
 }
