@@ -1,5 +1,84 @@
 import { ArgsType, Authorized, Field, InputType } from 'type-graphql'
 
+import {
+   ProjectScopes,
+   EnumProjectScopesFilter,
+   Project
+} from '@prisma-gen/type-graphql'
+
+@InputType()
+export class ProjAdvancedFilterConditions {
+   @Field(_type => [ProjAdvancedFilterArgs], {
+      nullable: true,
+   })
+   AND?: ProjAdvancedFilterArgs[]
+
+   @Field(_type => [ProjAdvancedFilterArgs], {
+      nullable: true,
+   })
+   OR?: ProjAdvancedFilterArgs[]
+
+   @Field(_type => [ProjAdvancedFilterArgs], {
+      nullable: true,
+   })
+   NOT?: ProjAdvancedFilterArgs[]
+}
+
+
+@InputType()
+export class TopicAdvancedFilter {
+   @Field(_type => [String], {
+      nullable: true,
+      description: 'Topic field is equal to',
+   })
+   equals?: string[]
+
+   @Field(_type => [String], {
+      nullable: true,
+      description: 'Topic field has every of the following values',
+   })
+   hasEvery?: string[]
+
+   @Field(_type => [String], {
+      nullable: true,
+      description: 'Topic field has some of the following values',
+   })
+   hasSome?: string[]
+
+   @Field(_type => [String], {
+      nullable: true,
+      description: 'Topic field is empty',
+   })
+   isEmpty?: boolean
+}
+
+@InputType()
+export class ProjAdvancedFilterArgs extends ProjAdvancedFilterConditions {
+   @Field(_type => Date, {
+      nullable: true,
+      description: 'Filter by start date'
+   })
+   startDate?: Date
+
+   @Field(_type => Date, {
+      nullable: true,
+      description: 'Filter by end date'
+   })
+   endDate?: Date
+
+   @Field(_type => ProjectScopes, {
+      nullable: true,
+      description: 'Filter by scopes'
+   })
+   scopes?: ProjectScopes
+
+   @Field(_type => [String], {
+      nullable: true,
+      description: 'Filter by topics'
+   })
+   topics?: TopicAdvancedFilter
+}
+
 @InputType('ProjectGlobalFilters', {
    isAbstract: true
 })
@@ -31,6 +110,12 @@ export class ProjGlobalFilterArgsInputT {
       description: "If true, returns archived and non-archived projects. Requires special permissions."
    })
    includeHidden?: boolean
+
+   @Field(_type => ProjAdvancedFilterArgs, {
+      nullable: true,
+      description: 'Advanced filter conditions'
+   })
+   advanced?: ProjAdvancedFilterArgs
 }
 
 @ArgsType()

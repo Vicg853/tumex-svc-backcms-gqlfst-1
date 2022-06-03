@@ -41,10 +41,13 @@ export class ProjectsQueriesResolver {
 
       const noneDefined = !showRelatedProjs && !showRelatedTo && !showTechStack
 
+
+
       const prisma = await ctx.prisma.project.findMany({
          where: {
             archived: filters?.onlyArchived || (filters?.includeArchived ? undefined : false),
-            hidden: filters?.onlyHidden || (filters?.includeHidden ? undefined : false)
+            hidden: filters?.onlyHidden || (filters?.includeHidden ? undefined : false),
+            ...filters?.advanced
          },
          ...(!noneDefined && {include: {
             ...showRelatedProjs as unknown as { relatedProjects: { select: { relatedTo: true } } },
