@@ -72,7 +72,7 @@ export class ProjAdvancedFilterArgs extends ProjAdvancedFilterConditions {
    })
    scopes?: ProjectScopes
 
-   @Field(_type => [String], {
+   @Field(_type => TopicAdvancedFilter, {
       nullable: true,
       description: 'Filter by topics'
    })
