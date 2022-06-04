@@ -1,10 +1,4 @@
-import { Authorized, ObjectType, Field, ArgsType, InputType } from 'type-graphql'
-import {
-   Resource,
-   Locales,
-   ProjectScopes,
-   Techs
-} from '@prisma-gen/type-graphql'
+import { Field, InputType } from 'type-graphql'
 import {
 
 } from '../'

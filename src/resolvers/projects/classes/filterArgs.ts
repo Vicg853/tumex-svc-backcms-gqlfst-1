@@ -2,14 +2,11 @@ import {
    ArgsType, 
    Authorized, 
    Field, 
-   InputType, 
-   ClassType
+   InputType
 } from 'type-graphql'
 
 import {
-   ProjectScopes,
-   EnumProjectScopesFilter,
-   Project
+   ProjectScopes
 } from '@prisma-gen/type-graphql'
 
 @InputType('AmountFilter', { 

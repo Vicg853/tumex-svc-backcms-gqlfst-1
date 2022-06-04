@@ -1,10 +1,7 @@
 import type { ApolloContext } from '~/index'
-import type {
-   Prisma
-} from '@prisma/client'
 
 import { ApolloError } from 'apollo-server-core'
-import { Arg, Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql'
+import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql'
 
 import {
    ProjectResult,

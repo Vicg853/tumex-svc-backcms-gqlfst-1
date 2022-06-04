@@ -2,11 +2,10 @@ import type { ApolloContext } from '~/index'
 
 import Fields from 'graphql-fields'
 import { Info, Resolver, Query, Ctx, Args } from 'type-graphql'
-import { Project } from '@prisma/client'
 
 import { ProjectResultAndRels } from './classes/queryFields'
 import { ProjectQueryArgs } from './classes/queryArgs'
-import { ProjGlobalFilterArgsType, AmountFilters } from './classes/filterArgs'
+import { ProjGlobalFilterArgsType } from './classes/filterArgs'
 import { checkOpacityCondition } from './utils'
 
 @Resolver()
