@@ -1,10 +1,66 @@
-import { ArgsType, Authorized, Field, InputType } from 'type-graphql'
+import { 
+   ArgsType, 
+   Authorized, 
+   Field, 
+   InputType, 
+   ClassType
+} from 'type-graphql'
 
 import {
    ProjectScopes,
    EnumProjectScopesFilter,
    Project
 } from '@prisma-gen/type-graphql'
+
+@InputType('AmountFilter', { 
+   isAbstract: true 
+})
+export class AmountFilters {
+   @Field(_type => [String], {
+      nullable: true
+   })
+   every?: string[] 
+
+   @Field(_type => [String], {
+      nullable: true
+   })
+   some?: string[]
+   @Field(_type => [String], {
+      nullable: true
+   })
+   none?: string[]
+}
+
+@InputType()
+export class ProjectOpacityRelatedFilters {
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true, returns archived and non-archived projects."
+   })
+   includeArchived?: boolean
+
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true, returns only archived projects. Overrides \"includeArchived\"."
+   })
+   onlyArchived?: boolean
+
+   //TODO Revise auth scopes
+   @Authorized('SUDO')
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true, returns only hidden projects. Overrides \"includeHidden\". Requires special permissions."
+   })
+   onlyHidden?: boolean
+
+   //TODO Revise auth scopes
+   @Authorized('SUDO')
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: "If true, returns archived and non-archived projects. Requires special permissions."
+   })
+   includeHidden?: boolean
+}
 
 @InputType()
 export class ProjAdvancedFilterConditions {
@@ -23,7 +79,6 @@ export class ProjAdvancedFilterConditions {
    })
    NOT?: ProjAdvancedFilterArgs[]
 }
-
 
 @InputType()
 export class TopicAdvancedFilter {
@@ -79,43 +134,55 @@ export class ProjAdvancedFilterArgs extends ProjAdvancedFilterConditions {
    topics?: TopicAdvancedFilter
 }
 
+@InputType() 
+export class ProjRelationFilterArgs {
+   @Field(_type => AmountFilters, {
+      nullable: true,
+      description: 'Projects\'s related condition'
+   })
+   related?: AmountFilters
+
+   @Field(_type => ProjectOpacityRelatedFilters, {
+      nullable: true,
+      description: 'Projects\'s related opacity conditions'
+   })
+   relatedOpacity?: ProjectOpacityRelatedFilters
+
+   @Field(_type => AmountFilters, {
+      nullable: true,
+      description: 'Project as relatee conditions'
+   })
+   relateeTo?: AmountFilters
+
+   @Field(_type => ProjectOpacityRelatedFilters, {
+      nullable: true,
+      description: 'Projects\' the current is relatee of, opacity conditions'
+   })
+   relateeToOpacity?: ProjectOpacityRelatedFilters
+
+   @Field(_type => AmountFilters, {
+      nullable: true,
+      description: 'Filter by tech stack'
+   })
+   techStack?: AmountFilters
+}
+
+
 @InputType('ProjectGlobalFilters', {
    isAbstract: true
 })
-export class ProjGlobalFilterArgsInputT {
-   @Field(_type => Boolean, {
-      nullable: true,
-      description: "If true, returns archived and non-archived projects."
-   })
-   includeArchived?: boolean
-
-   @Field(_type => Boolean, {
-      nullable: true,
-      description: "If true, returns only archived projects. Overrides \"includeArchived\"."
-   })
-   onlyArchived?: boolean
-
-   //TODO Revise auth scopes
-   @Authorized('SUDO')
-   @Field(_type => Boolean, {
-      nullable: true,
-      description: "If true, returns only hidden projects. Overrides \"includeHidden\". Requires special permissions."
-   })
-   onlyHidden?: boolean
-
-   //TODO Revise auth scopes
-   @Authorized('SUDO')
-   @Field(_type => Boolean, {
-      nullable: true,
-      description: "If true, returns archived and non-archived projects. Requires special permissions."
-   })
-   includeHidden?: boolean
-
+export class ProjGlobalFilterArgsInputT extends ProjectOpacityRelatedFilters {
    @Field(_type => ProjAdvancedFilterArgs, {
       nullable: true,
       description: 'Advanced filter conditions'
    })
    advanced?: ProjAdvancedFilterArgs
+
+   @Field(_type => ProjRelationFilterArgs, {
+      nullable: true,
+      description: 'Filter by project relations'
+   })
+   relationsFilter?: ProjRelationFilterArgs
 }
 
 @ArgsType()
