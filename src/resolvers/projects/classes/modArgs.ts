@@ -4,8 +4,7 @@ import { Field, ArgsType, InputType, ClassType, Authorized } from 'type-graphql'
 import {
    ResourceCreateInput,
    LocalesCreateInput,
-   ProjectScopes,
-   ProjectCreatetopicsInput
+   ProjectScopes
 } from '@prisma-gen/type-graphql'
 import {
    ModProjToProjRelated,

@@ -1,10 +1,7 @@
 import type { ApolloContext } from '~/index'
-import type {
-   Prisma
-} from '@prisma/client'
 
 import { ApolloError } from 'apollo-server-core'
-import { Arg, Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql'
+import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql'
 
 import {
    ProjectResult,
@@ -113,7 +110,7 @@ export class ModifyProjectsResolver {
          ids, archived, hidden 
       }: ModProjectsOpacityArgs,
    ): Promise<string | null> {
-      if(!archived && !hidden)
+      if(typeof archived !== 'boolean' && typeof hidden !== 'boolean')
          throw new ApolloError('No opacity update inputs were provided. At least one of them must be assigned.', '406')
 
       const prismaRes = await ctx.prisma.project.updateMany({

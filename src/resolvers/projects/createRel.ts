@@ -1,5 +1,4 @@
 import type { ApolloContext } from '~/index'
-import type { ProjectsFullResultType } from './types'
 
 import { Mutation, Ctx, Args, Resolver } from 'type-graphql'
 import { ApolloError } from 'apollo-server-core'

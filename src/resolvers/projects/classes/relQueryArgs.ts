@@ -1,7 +1,4 @@
 import { ArgsType, Authorized, Field, InputType, registerEnumType } from 'type-graphql'
-import {
-   ProjectResult
-} from './queryFields'
 
 import {
    ProjGlobalFilterArgsInputT

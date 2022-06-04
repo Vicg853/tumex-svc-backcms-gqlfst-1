@@ -1,4 +1,4 @@
-import { Authorized, ArgsType, Field } from 'type-graphql'
+import { ArgsType, Field } from 'type-graphql'
 import {
    ProjGlobalFilterArgsInputT   
 } from './filterArgs'

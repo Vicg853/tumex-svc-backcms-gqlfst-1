@@ -87,7 +87,6 @@ export class ProjectsRelationQueryResolver {
       if(!!prismaRes.err) 
          throw new Error(prismaRes.message)
       
-      console.log(prismaRes.data)
       return null
    }
 }

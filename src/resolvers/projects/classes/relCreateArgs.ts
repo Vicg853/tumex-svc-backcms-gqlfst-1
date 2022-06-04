@@ -1,4 +1,4 @@
-import { ArgsType, Field, InputType } from 'type-graphql'
+import { ArgsType, Field } from 'type-graphql'
 
 @ArgsType()
 export class ProjectRelationCreate {

@@ -16,7 +16,8 @@ import {
 
 import {
    ObjectiveCreationResolvers,
-   ObjectivesQueriesResolver
+   ObjectivesQueriesResolver,
+   ObjectiveRemoveResolvers
 } from './resolvers/objectives/index'
 
 export const schemaGen = async () => await buildSchema({
@@ -28,7 +29,8 @@ export const schemaGen = async () => await buildSchema({
       ProjectsRelationQueryResolver,
       CreateProjectRelationResolver,
       ObjectiveCreationResolvers,
-      ObjectivesQueriesResolver
+      ObjectivesQueriesResolver,
+      ObjectiveRemoveResolvers
    ],
    emitSchemaFile: path.resolve(__dirname, '../generated-schema.graphql'),
    authChecker,

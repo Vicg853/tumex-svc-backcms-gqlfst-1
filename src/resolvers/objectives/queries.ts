@@ -1,15 +1,19 @@
-import { ApolloError } from 'apollo-server-core';
-import { Arg, Resolver, Query, Ctx, Args} from 'type-graphql'
-
 import type { ApolloContext } from '~/index'
+
+import { ApolloError } from 'apollo-server-core';
+import { Resolver, Query, Ctx, Args} from 'type-graphql'
+
 import { 
-   ObjectiveQueryFields 
+   ObjectiveQueryFields,
+   GroupedObjectivesQueryFields
 } from './classes/queryFields'
 import { 
    ManyObjectivesQueryArgs,
-   QueryOneObjectiveArgs,
-   ObjectivesGroupByFieldEnum
+   QueryOneObjectiveArgs
 } from './classes/queryArgs'
+import {
+   ManyObjectivesGroupQueryArgs
+} from './classes/groupArgs'
 
 @Resolver()
 export class ObjectivesQueriesResolver {
@@ -77,5 +81,35 @@ export class ObjectivesQueriesResolver {
       return prismaRes.data!
    }
 
+   @Query(_type => [GroupedObjectivesQueryFields], {
+      nullable: true,
+      description: 'Get many objectives grouped by fields'
+   })
+   async getGroupedObjectives(
+      @Ctx() ctx: ApolloContext,
+      @Args() { group, filters }: ManyObjectivesGroupQueryArgs
+   ): Promise<GroupedObjectivesQueryFields[] | null> {
+      const prismaRes = await ctx.prisma.objectives.findMany({
+         where: {
+            ...filters,
+            ...({includeHidden: undefined}),
+            ...({onlyHidden: undefined}),
+            hidden: filters?.onlyHidden || (filters?.includeHidden ? undefined : false)
+         }
+      }).then(res => ({
+         data: res,
+         message: null,
+         err: null
+      })).catch(err => ({
+         data: null,
+         message: err.message ?? 'An unknown error occurred while fetching objectives',
+         err: err.code ?? 'INTERNAL_SERVER_ERROR'
+      }))
 
+      if(prismaRes.err)
+         throw new ApolloError(prismaRes.message, prismaRes.err)
+      
+      return null
+   }
+      
 }
