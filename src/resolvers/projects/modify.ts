@@ -113,7 +113,7 @@ export class ModifyProjectsResolver {
          ids, archived, hidden 
       }: ModProjectsOpacityArgs,
    ): Promise<string | null> {
-      if(!archived && !hidden)
+      if(typeof archived !== 'boolean' && typeof hidden !== 'boolean')
          throw new ApolloError('No opacity update inputs were provided. At least one of them must be assigned.', '406')
 
       const prismaRes = await ctx.prisma.project.updateMany({
