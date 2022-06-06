@@ -15,8 +15,13 @@
      "baseUrl": ".",
      "paths": {
         "~/*": ["./src/*"],
-        "@prisma-gen/*": ["./prisma/generated/*"],
-        "@lib/*": ["./src/lib/*"],
+         "@prisma-gen/*": ["./prisma/generated/*"],
+         "@lib/*": ["./src/lib/*"],
+         "@utils/*": ["./src/utils/*"],
+         "@types/*": ["./src/types/*"],
+         "@resolvers/*": ["./src/resolvers/*"],
+         "@handlers/*": ["./src/handlers/*"],
+         "@middlewares/*": ["./src/middlewares/*"],
      }
    },
    "include": [
