@@ -24,12 +24,12 @@
     "test": "NODE_ENV=test && echo 'test'",
     "prisma:gen": "npx prisma generate",
     "prisma:push": "npx prisma db push --skip-generate",
-    "dev:gen": "npx prisma generate --watch",
+    "dev:gen": "npx prisma generate",
     "dev": "NODE_ENV=development nodemon",
     "dev:all": "yarn dev:gen && NODE_ENV=development nodemon",
     "build": "tsc",
     "build:paths": "tscpaths -p tsconfig-build-paths.json -s ./dist -o ./dist",
-    "build:all": "yarn generate && yarn build && yarn build:paths",
+    "build:all": "yarn prisma:gen && yarn build && yarn build:paths",
     "start": "NODE_ENV=production node dist/index.js"
   },
   "repository": {
