@@ -5,7 +5,12 @@
       "paths": {
          "~/*": ["./dist/src/*"],
          "@prisma-gen/*": ["./dist/prisma/generated/*"],
-         "@lib/*": ["./dist/src/lib/*"]
+         "@lib/*": ["./dist/dist/src/lib/*"],
+         "@utils/*": ["./dist/src/utils/*"],
+         "@types/*": ["./dist/src/types/*"],
+         "@resolvers/*": ["./dist/src/resolvers/*"],
+         "@handlers/*": ["./dist/src/handlers/*"],
+         "@middlewares/*": ["./dist/src/middlewares/*"],
       }
    }
 }

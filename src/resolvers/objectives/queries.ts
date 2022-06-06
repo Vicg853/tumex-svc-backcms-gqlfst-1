@@ -2,6 +2,7 @@ import type { ApolloContext } from '~/index'
 
 import { ApolloError } from 'apollo-server-core';
 import { Resolver, Query, Ctx, Args} from 'type-graphql'
+import { groupObjectives } from '@utils/grouping'
 
 import { 
    ObjectiveQueryFields,
@@ -12,7 +13,8 @@ import {
    QueryOneObjectiveArgs
 } from './classes/queryArgs'
 import {
-   ManyObjectivesGroupQueryArgs
+   ManyObjectivesGroupQueryArgs,
+   ObjectivesGroupByFieldEnum
 } from './classes/groupArgs'
 
 @Resolver()
@@ -89,11 +91,18 @@ export class ObjectivesQueriesResolver {
       @Ctx() ctx: ApolloContext,
       @Args() { group, filters }: ManyObjectivesGroupQueryArgs
    ): Promise<GroupedObjectivesQueryFields[] | null> {
+      if(group.length === 0)
+         throw new ApolloError('No group specified', '406')
+
+      const cleanFilter = {
+         ...filters,
+         includeHidden: undefined,
+         onlyHidden: undefined
+      }
+
       const prismaRes = await ctx.prisma.objectives.findMany({
          where: {
-            ...filters,
-            ...({includeHidden: undefined}),
-            ...({onlyHidden: undefined}),
+            ...cleanFilter,
             hidden: filters?.onlyHidden || (filters?.includeHidden ? undefined : false)
          }
       }).then(res => ({
@@ -106,10 +115,17 @@ export class ObjectivesQueriesResolver {
          err: err.code ?? 'INTERNAL_SERVER_ERROR'
       }))
 
-      if(prismaRes.err)
-         throw new ApolloError(prismaRes.message, prismaRes.err)
       
-      return null
+      if(prismaRes.err)
+      throw new ApolloError(prismaRes.message, prismaRes.err)
+      
+      if(!prismaRes.data) 
+         return null
+      
+      return groupObjectives(prismaRes.data, {
+         progress: group.includes(ObjectivesGroupByFieldEnum.progress),
+         year: group.includes(ObjectivesGroupByFieldEnum.year),
+      })
    }
       
 }

@@ -10,7 +10,6 @@ import {
 
 export enum ObjectivesGroupByFieldEnum {
    progress = "progress",
-   source = "source",
    year = "year"
  }
  registerEnumType(ObjectivesGroupByFieldEnum, {
