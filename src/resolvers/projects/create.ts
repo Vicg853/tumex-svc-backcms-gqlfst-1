@@ -182,6 +182,7 @@ export class CreateProjectsResolver {
       @Ctx() ctx: ApolloContext,
       @Args() { projects }: CreateManyProjectsArgs,
    ): Promise<number | null | { extensions: { code: string } }> {
+      //TODO Add global input as default values
       const create = await ctx.prisma.project.createMany({
          data: projects
       })
