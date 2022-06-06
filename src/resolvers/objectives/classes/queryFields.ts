@@ -78,12 +78,6 @@ export class GroupedObjectivesQueryFields {
    })
    progress?: ObjectiveMainType['progress']
 
-   @Field(_type => String, {
-      nullable: true,
-      description: 'Get source group value. Null if not grouped by source.'
-   })
-   source?: ObjectiveMainType['source']
-
    @Field(_type => [ObjectiveQueryFields], {
       nullable: true,
       description: 'Get objectives for the following group(s) methods.'
