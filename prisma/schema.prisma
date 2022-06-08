@@ -110,8 +110,8 @@ model Techs {
   logo String?
   url  String?
 
-  aproxProjUse  Int
-  aproxExpYears Int
+  aproxProjUse  Int?
+  aproxExpYears Int?
 
   inProjects TechsInProjects[]
 
