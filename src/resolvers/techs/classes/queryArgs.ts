@@ -8,7 +8,7 @@ import {
 } from './filterArgs'
 
 @ArgsType()
-export class QueryArgs extends TechBasicSharedFilters {
+export class QueryManyArgs extends TechBasicSharedFilters {
    @Field(_type => TechsAdvancedSharedFilters, {
       nullable: true,
       description: 'Filter technologies by specific field(s) and condition(s)'
@@ -20,4 +20,18 @@ export class QueryArgs extends TechBasicSharedFilters {
    //   description: 'Group technologies by specific field(s)'
    //})
    //group?: GroupByInput
+}
+
+export class QueryOnlyArgs extends TechBasicSharedFilters {
+   @Field(_type => String, {
+      nullable: true,
+      description: 'The ID of the tech to query'
+   })
+   id?: string
+
+   @Field(_type => String, {
+      nullable: true,
+      description: 'The name of the tech to query'
+   })
+   name?: string
 }
