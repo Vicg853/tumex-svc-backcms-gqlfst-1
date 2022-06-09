@@ -1,1 +1,1 @@
-export { CreateResolver } from './creation'
+export { TechQueryResolver } from './query'
