@@ -14,8 +14,9 @@ import { QueryManyArgs, QueryOnlyArgs } from './classes/queryArgs'
 
 @Resolver()
 export class TechQueryResolver {
-   @Query(_type => QueryFields, {
-      description: 'Query many technologies with optional filters'
+   @Query(_type => [QueryFields], {
+      description: 'Query many technologies with optional filters',
+      nullable: true
    })
    async getManyTechs(
       @Ctx() ctx: ApolloContext,
@@ -39,11 +40,12 @@ export class TechQueryResolver {
       if(prismaRes.err)
          throw new ApolloError(prismaRes.message, prismaRes.err)
 
-      return prismaRes.data
+      return prismaRes.data ?? null
    }
 
    @Query(_type => QueryFields, {
-      description: 'Query a specific tech by its ID or name'
+      description: 'Query a specific tech by its ID or name',
+      nullable: true
    })
    async getTech(
       @Ctx() ctx: ApolloContext,
