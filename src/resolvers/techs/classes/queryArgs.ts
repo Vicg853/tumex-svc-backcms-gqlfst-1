@@ -22,6 +22,7 @@ export class QueryManyArgs extends TechBasicSharedFilters {
    //group?: GroupByInput
 }
 
+@ArgsType()
 export class QueryOnlyArgs extends TechBasicSharedFilters {
    @Field(_type => String, {
       nullable: true,

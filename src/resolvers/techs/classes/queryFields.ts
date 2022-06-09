@@ -1,9 +1,11 @@
 import type { TechsType } from '../types'
 
 import {
-   Field
+   Field,
+   ObjectType,
 } from 'type-graphql'
 
+@ObjectType()
 export class QueryFields {
    @Field(_type => String, {
       nullable: false,

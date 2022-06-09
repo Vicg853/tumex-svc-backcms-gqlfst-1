@@ -7,7 +7,7 @@ import {
 } from 'type-graphql'
 
 
-@InputType()
+@ArgsType()
 export class TechBasicSharedFilters {
    //TODO Revise auth scopes
    @Authorized('SUDO')
