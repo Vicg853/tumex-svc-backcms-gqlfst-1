@@ -14,7 +14,7 @@ import {
 } from './classes/createArgs'
 
 @Resolver()
-export class CreateResolver {
+export class TechCreateResolver {
    //TODO check auth scopes
    @Authorized('SUDO')
    @Mutation(_type => String, {
