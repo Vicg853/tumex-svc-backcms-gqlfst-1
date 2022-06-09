@@ -29,7 +29,7 @@ export class TechBasicSharedFilters {
 function createAdvancedFilterFields<T>(ClassType: ClassType, label: string) {
    @InputType(`Tech${label}FieldFilters`)
    abstract class TechFieldFilters {
-      @Field(_type => [ClassType], {
+      @Field(_type => ClassType, {
          nullable: true,
          description: `Where ${label} is equals to`,
       })
@@ -41,7 +41,7 @@ function createAdvancedFilterFields<T>(ClassType: ClassType, label: string) {
       })
       in?: T[]
    
-      @Field(_type => [ClassType], {
+      @Field(_type => Boolean, {
          nullable: true,
          description: `Filter by ${label} field is defined`,
       })
