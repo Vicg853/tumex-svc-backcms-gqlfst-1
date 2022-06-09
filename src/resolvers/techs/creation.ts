@@ -1,5 +1,4 @@
 import type { ApolloContext } from '~/index'
-import type { SharedDataType } from './classes/createArgs'
 
 import { ApolloError } from 'apollo-server-core'
 import {
