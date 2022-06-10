@@ -6,6 +6,9 @@ import {
    TechBasicSharedFilters,
    TechsAdvancedSharedFilters
 } from './filterArgs'
+import {
+  GroupsTechsFieldsEnum
+} from './groupingArgs'
 
 @ArgsType()
 export class QueryManyArgs extends TechBasicSharedFilters {
@@ -14,12 +17,15 @@ export class QueryManyArgs extends TechBasicSharedFilters {
       description: 'Filter technologies by specific field(s) and condition(s)'
    })
    filter?: TechsAdvancedSharedFilters
+}
 
-   //@Field(_type => GroupByInput, {
-   //   nullable: true,
-   //   description: 'Group technologies by specific field(s)'
-   //})
-   //group?: GroupByInput
+@ArgsType()
+export class QueryManyGroupedArgs extends QueryManyArgs {
+   @Field(_type => GroupsTechsFieldsEnum, {
+      nullable: false,
+      description: 'Fields to group techs by'
+   })
+   group!: GroupsTechsFieldsEnum
 }
 
 @ArgsType()
