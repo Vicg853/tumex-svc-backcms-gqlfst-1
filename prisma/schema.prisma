@@ -106,12 +106,12 @@ model Techs {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
 
-  name String
+  name String @unique
   logo String?
   url  String?
 
-  aproxProjUse  Int
-  aproxExpYears Int
+  aproxProjUse  Int?
+  aproxExpYears Int?
 
   inProjects TechsInProjects[]
 
