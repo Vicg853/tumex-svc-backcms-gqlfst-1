@@ -9,8 +9,17 @@ import {
    Resolver
 } from 'type-graphql'
 
-import { QueryFields } from './classes/queryFields'
-import { QueryManyArgs, QueryOnlyArgs } from './classes/queryArgs'
+import { groupTechs } from '@utils/grouping'
+import { GroupsTechsFieldsEnum } from './classes/groupingArgs'
+import { 
+  QueryFields, 
+  GroupedQueryFields 
+} from './classes/queryFields'
+import { 
+  QueryManyArgs, 
+  QueryOnlyArgs,
+  QueryManyGroupedArgs
+} from './classes/queryArgs'
 
 @Resolver()
 export class TechQueryResolver {
@@ -20,7 +29,7 @@ export class TechQueryResolver {
    })
    async getManyTechs(
       @Ctx() ctx: ApolloContext,
-      @Args() { filter, /*group*/ includeHidden, onlyHidden }: QueryManyArgs
+      @Args() { filter, includeHidden, onlyHidden }: QueryManyArgs
    ): Promise<Techs[] | null> {
       const prismaRes = await ctx.prisma.techs.findMany({
          where: {
@@ -41,6 +50,43 @@ export class TechQueryResolver {
          throw new ApolloError(prismaRes.message, prismaRes.err)
 
       return prismaRes.data ?? null
+   }
+
+   @Query(_type => [GroupedQueryFields], {
+      description: 'Query many technologies with optional filters and grouping',
+      nullable: true
+   })
+   async getManyGroupedTechs(
+      @Ctx() ctx: ApolloContext,
+      @Args() { filter, group, includeHidden, onlyHidden }: QueryManyGroupedArgs
+   ): Promise<GroupedQueryFields[] | null> {
+      const prismaRes = await ctx.prisma.techs.findMany({
+	 where: {
+	    ...filter,
+	    hidden: onlyHidden || (includeHidden ? undefined : false),
+	 }
+      }).then(res => ({
+	 data: res,
+	 message: null,
+	 err: null
+      })).catch(err => ({
+	 data: null,
+	 message: err.message ?? 'An unknown error occurred while creating new techs',
+	 err: err.code ?? 'INTERNAL_SERVER_ERROR'
+      }))
+
+      if(prismaRes.err)
+	 throw new ApolloError(prismaRes.message, prismaRes.err)
+	
+      if(!prismaRes.data)
+	return null
+
+      return groupTechs(prismaRes.data, {
+	aproxExpYears: group
+	  .indexOf(GroupsTechsFieldsEnum.aproxExpYears) >= 0 ? true : false,
+	aproxProjUse: group
+	  .indexOf(GroupsTechsFieldsEnum.aproxProjUse) >= 0 ? true : false,
+      })
    }
 
    @Query(_type => QueryFields, {
