@@ -57,6 +57,8 @@ export const groupObjectives = <P extends ObjectiveProgress, Y extends number>(o
 }, [])
 
 
+//TODO Merge both functions together later
+
 type TechGroupOut = {
    aproxProjUse?: TechsType['aproxProjUse'],
    aproxExpYears?: TechsType['aproxExpYears'],
