@@ -24,6 +24,34 @@ export class TechBasicSharedFilters {
       description: "If true, returns archived and non-archived techs. Requires special permissions."
    })
    includeHidden?: boolean
+
+   @Authorized('SUDO')
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: 'Filter by related project hidden state',
+   })
+   relProjHidden?: boolean
+
+   @Authorized('SUDO')
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: 'Filter by related project archived state',
+   })
+   relProjArchived?: boolean
+
+   @Authorized('SUDO')
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: 'Filter by only hidden related projects',      
+   })
+   onlyHiddenRelProj?: boolean
+
+   @Authorized('SUDO')
+   @Field(_type => Boolean, {
+      nullable: true,
+      description: 'Filter by only archived related projects',
+   })
+   onlyArchivedRelProj?: boolean
 }
 
 function createAdvancedFilterFields<T>(ClassType: ClassType, label: string) {
