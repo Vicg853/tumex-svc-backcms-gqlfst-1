@@ -25,6 +25,7 @@ import {
    TechQueryResolver,
    TechDeleteResolver,
    CreateTechInProjResolver,
+   DeleteTechsInProjResolver
 } from './resolvers/techs'
 
 export const schemaGen = async () => await buildSchema({
@@ -41,7 +42,8 @@ export const schemaGen = async () => await buildSchema({
       TechCreateResolver,
       TechQueryResolver,
       TechDeleteResolver,
-      CreateTechInProjResolver
+      CreateTechInProjResolver,
+      DeleteTechsInProjResolver
    ],
    emitSchemaFile: path.resolve(__dirname, '../generated-schema.graphql'),
    authChecker,
