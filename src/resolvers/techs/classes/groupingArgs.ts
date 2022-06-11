@@ -7,6 +7,7 @@ import {
 export enum GroupsTechsFieldsEnum {
   aproxProjUse = 'aproxProjUse',
   aproxExpYears = 'aproxExpYears',
+  projectId = 'projectId',
 }
 registerEnumType(GroupsTechsFieldsEnum, {
   name: "GroupsTechsFieldsEnum",

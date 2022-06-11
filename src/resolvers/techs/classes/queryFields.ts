@@ -79,6 +79,12 @@ export class GroupedQueryFields {
    })
    aproxProjUse?: number | null
 
+   @Field(_type => String, {
+       nullable: true,
+      description: 'The tech\'s related project id'
+   })
+   projId?: string
+
    @Field(_type => [QueryFields], {
      nullable: false,
      description: 'The technologies grouped by the specified field(s)'
