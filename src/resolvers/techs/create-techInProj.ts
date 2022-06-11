@@ -6,12 +6,14 @@ import {
   Ctx,
   Mutation,
   Args,
+  Authorized
 } from 'type-graphql'
 
 import { CreateTechInProjArgs } from './classes/relCreateArgs'
 
 @Resolver()
 export class CreateTechInProjResolver {
+  @Authorized("SUDO")
   @Mutation(() => [String], {
     nullable: true,
     description: 'Create a new tech(s) in project(s) realtion (append tech(s) to project(s).'
