@@ -60,6 +60,13 @@ export const formatError: Config['formatError'] = (error) => {
          httpCatCode: `${httpCatsUrl}/409`
       }
    }
+   else if (error.extensions.code === '404') return {
+      message: `Not found: ${error.message}`,
+      extensions: {
+         code: '404',
+	 httpCatCode: `${httpCatsUrl}/404`
+      }
+   }
 
 
    return defaultErr
