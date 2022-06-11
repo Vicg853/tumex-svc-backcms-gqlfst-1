@@ -21,11 +21,11 @@ export class QueryManyArgs extends TechBasicSharedFilters {
 
 @ArgsType()
 export class QueryManyGroupedArgs extends QueryManyArgs {
-   @Field(_type => GroupsTechsFieldsEnum, {
+   @Field(_type => [GroupsTechsFieldsEnum], {
       nullable: false,
       description: 'Fields to group techs by'
    })
-   group!: GroupsTechsFieldsEnum
+   group!: GroupsTechsFieldsEnum[]
 }
 
 @ArgsType()
