@@ -21,10 +21,8 @@
     "ext": "ts, js"
   },
   "scripts": {
-    "test": "NODE_ENV=test && echo 'test'",
     "prisma:gen": "npx prisma generate",
     "prisma:push": "npx prisma db push --skip-generate",
-    "dev:gen": "npx prisma generate",
     "dev": "NODE_ENV=development nodemon",
     "dev:all": "yarn dev:gen && NODE_ENV=development nodemon",
     "build": "tsc",
@@ -45,7 +43,7 @@
     "postgresql"
   ],
   "author": "<vicg853@gmail.com, vicg853, Victor Rosa Gomez>",
-  "license": "COPYRIGHT (c) Victor Rosa Gomez 2022-present. All rights reserved.",
+  "license": "COPYRIGHT",
   "bugs": {
     "url": "https://github.com/Vicg853/tumex-svc-backcms-gqlfst-1/issues"
   },
