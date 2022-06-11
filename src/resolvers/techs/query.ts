@@ -58,35 +58,57 @@ export class TechQueryResolver {
    })
    async getManyGroupedTechs(
       @Ctx() ctx: ApolloContext,
-      @Args() { filter, group, includeHidden, onlyHidden }: QueryManyGroupedArgs
+      @Args() { 
+         filter, group, includeHidden, onlyHidden,
+         onlyArchivedRelProj, onlyHiddenRelProj,
+         relProjArchived, relProjHidden
+      }: QueryManyGroupedArgs
    ): Promise<GroupedQueryFields[] | null> {
       const prismaRes = await ctx.prisma.techs.findMany({
 	 where: {
 	    ...filter,
 	    hidden: onlyHidden || (includeHidden ? undefined : false),
-	 }
+	 },
+	include: {
+	   inProjects: {
+	      select: { project: { select: { id: true  } }},
+         where: {
+            project: {
+               hidden: onlyHiddenRelProj || (relProjHidden ? undefined : false),
+               archived: onlyArchivedRelProj || (relProjArchived ? undefined : false),
+            }
+         }
+	   }
+	}
       }).then(res => ({
-	 data: res,
-	 message: null,
-	 err: null
+	      data: res,
+	      message: null,
+	      err: null
       })).catch(err => ({
-	 data: null,
-	 message: err.message ?? 'An unknown error occurred while creating new techs',
-	 err: err.code ?? 'INTERNAL_SERVER_ERROR'
+	      data: null,
+	      message: err.message ?? 'An unknown error occurred while creating new techs',
+	      err: err.code ?? 'INTERNAL_SERVER_ERROR'
       }))
 
       if(prismaRes.err)
-	 throw new ApolloError(prismaRes.message, prismaRes.err)
+	      throw new ApolloError(prismaRes.message, prismaRes.err)
 	
       if(!prismaRes.data)
-	return null
+	      return null
+      
+      const prismaResEdit = prismaRes.data.map(tech => ({
+	      ...tech,
+	      inProjects: undefined,
+	      projects: tech.inProjects
+            .map(proj => proj.project.id)
+      }))
 
-      return groupTechs(prismaRes.data, {
-	aproxExpYears: group
-	  .indexOf(GroupsTechsFieldsEnum.aproxExpYears) >= 0 ? true : false,
-	aproxProjUse: group
-	  .indexOf(GroupsTechsFieldsEnum.aproxProjUse) >= 0 ? true : false,
-      })
+      return groupTechs(prismaResEdit, {
+	      aproxExpYears: group
+	        .includes(GroupsTechsFieldsEnum.aproxExpYears) ? true : false,
+	      aproxProjUse: group
+	        .includes(GroupsTechsFieldsEnum.aproxProjUse) ? true : false,
+      }, group.includes(GroupsTechsFieldsEnum.projectId))
    }
 
    @Query(_type => QueryFields, {
