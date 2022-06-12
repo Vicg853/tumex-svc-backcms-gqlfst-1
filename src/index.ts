@@ -37,6 +37,7 @@ const apolloOpts: Config<ExpressContext> = {
             endpoint: `${ROOT_PATH}graphqli`,
          }),
    ],
+   introspection: process.env.NODE_ENV !== 'production',
 }
 const middlewareConfig: Omit<ServerRegistration, 'app'> = {
    path: ROOT_PATH,
