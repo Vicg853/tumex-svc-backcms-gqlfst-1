@@ -1,8 +1,13 @@
+import { config as dotenv } from 'dotenv'
+
+dotenv({
+   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+})
+
 import 'reflect-metadata'
 import type { Config } from 'apollo-server-core'
 import type { ExpressContext, ServerRegistration } from 'apollo-server-express'
 
-import { config as dotenv } from 'dotenv'
 import { ApolloServer } from 'apollo-server-express'
 import { PrismaClient } from '@prisma/client'
 
@@ -14,11 +19,6 @@ import {
 import { formatError } from './handlers/apollo-response'
 import { context } from './handlers/apollo-context'
 import { app } from './express'
-
-//* Env init
-dotenv({
-   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-})
 
 //* Declaring/checking env based vars
 const PORT: number = parseInt(process.env.PORT ?? '4000', 10)
@@ -37,6 +37,7 @@ const apolloOpts: Config<ExpressContext> = {
             endpoint: `${ROOT_PATH}graphqli`,
          }),
    ],
+   introspection: process.env.NODE_ENV !== 'production',
 }
 const middlewareConfig: Omit<ServerRegistration, 'app'> = {
    path: ROOT_PATH,

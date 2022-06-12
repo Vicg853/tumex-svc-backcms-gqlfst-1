@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { buildSchema } from 'type-graphql'
+import { buildSchemaSync } from 'type-graphql'
 
 import path from 'path'
 
@@ -28,7 +28,7 @@ import {
    DeleteTechsInProjResolver
 } from './resolvers/techs'
 
-export const schemaGen = async () => await buildSchema({
+export const schema = buildSchemaSync({
    resolvers: [
       CreateProjectsResolver,
       ProjectsQueriesResolver,
@@ -45,7 +45,9 @@ export const schemaGen = async () => await buildSchema({
       CreateTechInProjResolver,
       DeleteTechsInProjResolver
    ],
-   emitSchemaFile: path.resolve(__dirname, '../generated-schema.graphql'),
+   emitSchemaFile: process.env.NODE_ENV !== 'production' ?
+	path.resolve(__dirname, '../generated-schema.graphql')
+	: false,
    authChecker,
    validate: true
 })

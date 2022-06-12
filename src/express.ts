@@ -1,5 +1,8 @@
 import express from 'express'
 import slowDown from 'express-slow-down'
+import { printSchema, lexicographicSortSchema } from 'graphql'
+
+import { schema } from './schema'
 
 const app = express()
 
@@ -12,5 +15,21 @@ const speedLimiter = slowDown({
 })
 
 app.use(speedLimiter)
+
+app.route('/schema').get(async (req, res) => {
+   
+
+   try {
+     const schemaSDL = printSchema(lexicographicSortSchema(schema), {
+        commentDescriptions: true,
+     })
+
+     res.set('Content-Type', 'text/plain')
+     res.status(200).send(schemaSDL)
+   } catch (err) {
+     console.error(`Error while serving or generating gql SDL schema: ${err}`)
+     res.status(500).send(`Error while serving or generating gql SDL schema.`)
+   }
+})
 
 export { app }

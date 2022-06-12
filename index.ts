@@ -1,7 +1,7 @@
 import { startServer  } from '~/index'
-import { schemaGen } from '~/schema'
+import { schema } from '~/schema'
 
 (async () => {
    console.log("⬆️ Starting server...")
-   await startServer(await schemaGen())
+   await startServer(schema)
 })()
