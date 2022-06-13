@@ -1,9 +1,9 @@
 {
    "compilerOptions": {
      "outDir": "dist",
-     "lib": ["ESNext", "ESNext.AsyncIterable"],
+     "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
      "incremental": true,
-     "target": "es2018",
+     "target": "ESNext",
      "module": "commonjs",
      "strict": true,
      "esModuleInterop": true,
