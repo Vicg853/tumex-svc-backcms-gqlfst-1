@@ -1493,6 +1493,13 @@ expand-brackets@^2.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+express-oauth2-jwt-bearer@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/express-oauth2-jwt-bearer/-/express-oauth2-jwt-bearer-1.1.0.tgz#38e824b4600f51869c9722b82f43bc6c8bfd6d17"
+  integrity sha512-T9sSmGftzMACOH1oY2gniHkiJ53dWjPgIUD/CrJDL5Ss5PeX+PAol53upd7eaKLiLn/vp+AMTefxkkDIPEJXBQ==
+  dependencies:
+    jose "^4.3.7"
+
 express-slow-down@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/express-slow-down/-/express-slow-down-1.4.0.tgz#89e0aef6c3bb3602b70f06e0824889bd2362cc21"
@@ -2278,6 +2285,11 @@ iterall@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
+
+jose@^4.3.7:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-4.8.1.tgz#dc7c2660b115ba29b44880e588c5ac313c158247"
+  integrity sha512-+/hpTbRcCw9YC0TOfN1W47pej4a9lRmltdOVdRLz5FP5UvUq3CenhXjQK7u/8NdMIIShMXYAh9VLPhc7TjhvFw==
 
 js-tokens@^4.0.0:
   version "4.0.0"
