@@ -3,8 +3,6 @@ import { buildSchemaSync } from 'type-graphql'
 
 import path from 'path'
 
-import { authChecker } from './auth/middlewares'
-
 import {
    CreateProjectsResolver,
    ProjectsQueriesResolver,
@@ -48,6 +46,5 @@ export const schema = buildSchemaSync({
    emitSchemaFile: process.env.NODE_ENV !== 'production' ?
 	path.resolve(__dirname, '../generated-schema.graphql')
 	: false,
-   authChecker,
    validate: true
 })
