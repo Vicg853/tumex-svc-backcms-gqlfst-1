@@ -3,7 +3,7 @@ import { buildSchemaSync } from 'type-graphql'
 
 import path from 'path'
 
-import { authChecker } from './auth'
+import { authChecker } from './auth/middlewares'
 
 import {
    CreateProjectsResolver,
