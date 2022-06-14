@@ -1,3 +1,6 @@
+import fetch from 'node-fetch'
+
+
 interface AUTH0Response {
   keys: {
     alg: 'RS256' | 'HS256'
@@ -25,46 +28,46 @@ type PromiseRes = ({
 
 export async function getPubJwtKey(): Promise<PromiseRes> {
   const auth0TenEndpoint = process.env.AUTH0_TENNANT_ENDPOINT 
-    + '.well-known/jwks.json'
+    + '/.well-known/jwks.json'
 	
-  return await fetch(auth0TenEndpoint)
-    .then(async res => {
-      if(!res.ok || res.status !== 200) return {
-	err: res.status ?? 500,
-        message: res.statusText ?? 'Unknown error occured while fetching JWKs',
-	keys: null
-      }
-      
-      return await res.json()
-        .then((jwks: AUTH0Response) => {
-          const keysMap = jwks['keys'].filter(jwk => 
-	    jwk.kid !== undefined && jwk.kid !== null 
-	    && jwk.x5c.length > 0)
-	    .map(jwk => jwk.x5c[0]) 
-
-	  if(keysMap.length === 0) return {
-	    err: 500,
-	    message: 'No valid JWKs were found',
+  return await fetch(auth0TenEndpoint, {
+    method: 'GET'
+  }).then(async res => {
+    if(!res.ok || res.status !== 200) return {
+	    err: res.status ?? 500,
+      message: res.statusText ?? 'Unknown error occurred while fetching JWKs',
 	    keys: null
-	  }
-          return {
-	    err: null,
-	    message: null,
-            keys: keysMap	  
-	  }
-        })
-	.catch(() => ({
-          err: 500,
-	  message: 'Error occured while parsing JWKs',
-	  keys: null
-	}))
-    }).catch(err => {
-      console.error('Error fetching auth0 public JWT key:', err)
+    }
+  
+    //@ts-ignore
+    return await res.json().then((jwks: AUTH0Response) => {
+      const keysMap = jwks['keys'].filter(jwk => 
+	      jwk.kid !== undefined && jwk.kid !== null 
+	      && jwk.x5c.length > 0)
+	      .map(jwk => jwk.x5c[0]) 
+      
+	    if(keysMap.length === 0) return {
+	      err: 500,
+	      message: 'No valid JWKs were found',
+	      keys: null
+	    }
       return {
-        err: 500,
-	message: err,
-        keys: null,
-      }
+	      err: null,
+	      message: null,
+        keys: keysMap	  
+	    }
+    }).catch(() => ({
+      err: 500,
+	    message: 'Error occurred while parsing JWKs',
+	    keys: null
+	  }))
+  }).catch(err => {
+    console.error('Error fetching auth0 public JWT key:', JSON.stringify(err))
+    return {
+      err: 500,
+      message: err,
+      keys: null,
+    }
   })
 }
 
