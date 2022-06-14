@@ -14,6 +14,7 @@ export const authChecker: AuthChecker<ApolloContext> = (
       else return false
    } 
 
+   if(context.auth.isTumex) return true
    if(!context.auth.hasMinSope) return false
    if(!context.auth.scopes.some(scope => 
      reqScopes.includes(scope))) return false
