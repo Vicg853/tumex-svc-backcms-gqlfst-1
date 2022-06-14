@@ -7,10 +7,12 @@
          "@prisma-gen/*": ["./dist/prisma/generated/*"],
          "@lib/*": ["./dist/dist/src/lib/*"],
          "@utils/*": ["./dist/src/utils/*"],
-         "@types/*": ["./dist/src/types/*"],
+         "@c-types/*": ["./dist/src/types/*"],
          "@resolvers/*": ["./dist/src/resolvers/*"],
          "@handlers/*": ["./dist/src/handlers/*"],
          "@middlewares/*": ["./dist/src/middlewares/*"],
+         "@config/*": ["./dist/src/config/*"],
+         "@auth/*": ["./dist/src/auth/*"],
       }
    }
 }

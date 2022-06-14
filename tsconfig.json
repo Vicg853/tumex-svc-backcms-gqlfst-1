@@ -18,10 +18,12 @@
          "@prisma-gen/*": ["./prisma/generated/*"],
          "@lib/*": ["./src/lib/*"],
          "@utils/*": ["./src/utils/*"],
-         "@types/*": ["./src/types/*"],
+         "@c-types/*": ["./src/types/*"],
          "@resolvers/*": ["./src/resolvers/*"],
          "@handlers/*": ["./src/handlers/*"],
          "@middlewares/*": ["./src/middlewares/*"],
+         "@config/*": ["./src/config/*"],
+         "@auth/*": ["./src/auth/*"],
      }
    },
    "include": [
