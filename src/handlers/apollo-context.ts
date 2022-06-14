@@ -28,31 +28,25 @@ export interface ApolloContextExtension {
       original: string
       decoded: Jwt
     }
-    scopes: string[]
-    roles: string[]
+    scopes: string[] | null
+    roles: string[] | null
     authed: true
+    invalidTkn: false
     err: null
   } & ({
     isTumex: true
-    hasMinSope: false
+    hasMinRole: true
   } | {
     isTumex: false
-    hasMinSope: true
+    hasMinRole: boolean
   })) | {
     token: null
     scopes: null
     roles: null
     isTumex: false
-    hasMinSope: false
-    authed: true
-    err: null
-  } | {
-    token: null
-    scopes: null
-    roles: null
-    isTumex: false
-    hasMinSope: false
+    hasMinRole: false
     authed: false
+    invalidTkn: boolean
     err: Err | null
   }
 }
@@ -63,7 +57,7 @@ export const context: ContextFunction<{req: Request}, ApolloContext> = async ({ 
   if(!authHeader || !authHeader.startsWith('Bearer ')) return { 
     prisma, auth: {
       token: null, scopes: null, roles: null, isTumex: false,
-      hasMinSope: false, authed: false, err: null,
+      hasMinRole: false, authed: false, err: null, invalidTkn: false
     }
   }
   
@@ -71,7 +65,7 @@ export const context: ContextFunction<{req: Request}, ApolloContext> = async ({ 
   if(!token) return {
     prisma, auth: { 
       token: null, scopes: null, roles: null, isTumex: false,
-      hasMinSope: false, authed: false, err: null,
+      hasMinRole: false, authed: false, err: null, invalidTkn: false
     }
   }
   
@@ -79,43 +73,28 @@ export const context: ContextFunction<{req: Request}, ApolloContext> = async ({ 
   if (err !== null && err === 401) return {
     prisma, auth: {
       token: null, scopes: null, roles: null, isTumex: false,
-      hasMinSope: false, authed: false, err: null,
+      hasMinRole: false, authed: false, err: null, invalidTkn: true
     }
   }
   if(err !== null) return {
     prisma, auth: {
       token: null, scopes: null, roles: null,
-      hasMinSope: false, authed: false, isTumex: false,
-      err: { code: err, message },
+      hasMinRole: false, authed: false, isTumex: false,
+      err: { code: err, message }, invalidTkn: false
     }
   }
 
   const payload = typeof decodedTkn.payload === 'string' ? 
     JSON.parse(decodedTkn.payload) : decodedTkn.payload
-	
-  if(!(scopesClaim in payload) || !(roleClaim in payload)) return {
-    prisma, auth: {
-      token: null, scopes: null, roles: null,
-      hasMinSope: false, authed: true, isTumex: false,
-      err: null,
-    }
-  }
 
-  if(payload[roleClaim].includes(tumexRole)) return {
+  if(roleClaim in payload && 
+    payload[roleClaim].includes(tumexRole)) return {
     prisma, auth: {
       token: { original: token, decoded: decodedTkn },
       scopes: payload[scopesClaim],
       roles: payload[roleClaim],
-      isTumex: true,
-      hasMinSope: false, authed: true, err: null,
-    }
-  }
-
-  if(!payload[roleClaim].includes(minRole)) return {
-    prisma, auth: {
-      token: null, scopes: null, roles: null, 
-      isTumex: false, hasMinSope: false, authed: true,
-      err: null,
+      isTumex: true, invalidTkn: false,
+      hasMinRole: true, authed: true, err: null,
     }
   }
 
@@ -123,11 +102,15 @@ export const context: ContextFunction<{req: Request}, ApolloContext> = async ({ 
     prisma, 
     auth: {
       token: { original: token, decoded: decodedTkn },
-      scopes: payload[scopesClaim].split(' '),
-      roles: payload[roleClaim].split(' '),
+      scopes: !(scopesClaim in payload) ? null : 
+	     payload[scopesClaim].split(' '),
+      roles: !(roleClaim in payload) ? null :
+        payload[roleClaim].split(' '),
       isTumex: false,
-      hasMinSope: true,
+      hasMinRole: (roleClaim in payload && 
+        payload[roleClaim].includes(minRole)),
       authed: true,
+      invalidTkn: false,
       err: null,
     }
   }
