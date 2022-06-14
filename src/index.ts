@@ -5,6 +5,7 @@ dotenv({
 })
 
 import 'reflect-metadata'
+import type { ApolloContextExtension } from './handlers/apollo-context'
 import type { Config } from 'apollo-server-core'
 import type { ExpressContext, ServerRegistration } from 'apollo-server-express'
 
@@ -26,7 +27,7 @@ const HOST: string = process.env.HOST ?? '0.0.0.0'
 const ROOT_PATH: string = process.env.ROOT_PATH ?? '/'
 const CORS: (string | RegExp)[] = process.env.CORS?.split(',') ?? [/^victorgomez\.dev$/]
 
-export interface ApolloContext {
+export interface ApolloContext extends ApolloContextExtension {
    prisma: PrismaClient
 }
 
