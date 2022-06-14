@@ -13,9 +13,8 @@ const verifyMap = (token: string, secrets: JWKsPromise) => {
     try {
       decoded = verify(token, secret, {
         algorithms: ['RS256'],
-	complete: true,
+	      complete: true,
       })
-
       break   
     } catch(err) { continue }
   }

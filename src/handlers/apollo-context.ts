@@ -1,5 +1,6 @@
 import type { ApolloContext } from '~/index'
-import type { Config } from 'apollo-server-core'
+import type { Config, ContextFunction } from 'apollo-server-core'
+import type { Request } from 'express'
 import type { Jwt } from 'jsonwebtoken'
 
 import { prisma } from '@lib/prisma-client'
@@ -42,14 +43,14 @@ export interface ApolloContextExtension {
   }
 }
 
-export const context: Config['context'] = async ({ req }): Promise<ApolloContext> => { 
-  const authHeader = (req.authorization ?? undefined) as string | undefined
+export const context: ContextFunction<{req: Request}, ApolloContext> = async ({ req }) => { 
+  const authHeader = (req.headers.authorization ?? undefined) as string | undefined
 
   if(!authHeader || !authHeader.startsWith('Bearer ')) return { 
-     prisma, auth: {
-       token: null, scopes: null, roles: null,
-       hasMinSope: false, authed: false, err: null,
-     }
+    prisma, auth: {
+      token: null, scopes: null, roles: null,
+      hasMinSope: false, authed: false, err: null,
+    }
   }
   
   const token = authHeader.replace('Bearer ', '')
@@ -59,9 +60,8 @@ export const context: Config['context'] = async ({ req }): Promise<ApolloContext
       hasMinSope: false, authed: false, err: null,
     }
   }
- 
+  
   const { decodedTkn, message, err } = await check(token)
-   
   if (err !== null && err === 401) return {
     prisma, auth: {
       token: null, scopes: null, roles: null,
@@ -76,7 +76,7 @@ export const context: Config['context'] = async ({ req }): Promise<ApolloContext
       err: { code: err, message },
     }
   }
-
+  
   const payload = typeof decodedTkn.payload === 'string' ? 
     JSON.parse(decodedTkn.payload) : decodedTkn.payload
 	
