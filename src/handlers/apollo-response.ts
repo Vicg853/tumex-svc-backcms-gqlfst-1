@@ -26,7 +26,7 @@ export const formatError: Config['formatError'] = (error) => {
    else if(error.extensions.code === 'INTERNAL_SERVER_ERROR') {
       console.error(JSON.stringify(error, null, 2))
       return {
-         message: 'Internal server error! This is our fault sorry!',
+         message: error.message ?? 'Internal server error! This is our fault sorry!',
          extensions: {
             httpCatCode: `${httpCatsUrl}/500`
          }
