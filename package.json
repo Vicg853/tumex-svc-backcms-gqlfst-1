@@ -17,7 +17,7 @@
       "src",
       "prisma"
     ],
-    "exec": "node -r tsconfig-paths/register -r ts-node/register ./index.ts",
+    "exec": "node --experimental-fetch -r tsconfig-paths/register -r ts-node/register ./index.ts",
     "ext": "ts, js"
   },
   "scripts": {
@@ -28,7 +28,7 @@
     "build": "tsc",
     "build:paths": "tscpaths -p tsconfig-build-paths.json -s ./dist -o ./dist",
     "build:all": "yarn prisma:gen && yarn build && yarn build:paths",
-    "start": "NODE_ENV=production node dist/index.js"
+    "start": "NODE_ENV=production node --experimental-fetch dist/index.js"
   },
   "repository": {
     "type": "git",
