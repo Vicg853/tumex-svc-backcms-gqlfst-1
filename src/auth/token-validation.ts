@@ -1,31 +1,44 @@
-import type { JWTHeader, JWTPayload } from 'express-oauth2-jwt-bearer'
+import type { Jwt } from 'jsonwebtoken'
 import type { JWKsPromise } from '@utils/pub-jwt-key'
 
 import { verify } from 'jsonwebtoken'
-import { auth } from 'express-oauth2-jwt-bearer'
 
 import { CacheTknKeys } from '@utils/pub-jwt-key'
 
 const cacheTknKeys = new CacheTknKeys()
 
-const verifyMap = (token: string, secrets: JWKsPromise) => secrets.some(secret => {
-  try {
-    return verify(token, secret, {
-      algorithms: ['RS256'],
-      complete: true,     
-    }) 
-  } catch(err) { return false }
-})
+const verifyMap = (token: string, secrets: JWKsPromise) => {
+  let decoded: Jwt | undefined;
+  for (const secret of secrets) {
+    try {
+      decoded = verify(token, secret, {
+        algorithms: ['RS256'],
+	complete: true,
+      })
+
+      break   
+    } catch(err) { continue }
+  }
+  return decoded
+}
 
   
-export const check = async (token: string) => {
+export const check = async (token: string): Promise<{
+  decodedTkn: Jwt
+  err: null
+  message: null
+} | {
+  decodedTkn: null
+  err: number
+  message: string
+}> => {
   await cacheTknKeys.init()
   let jwtKeys = await cacheTknKeys.get()
 
   if(!jwtKeys) return {
     err: 500,
     message: 'Error occured with the JWT keys cache',
-    keys: null,
+    decodedTkn: null,
   }
 
   let verifiedTkn = verifyMap(token, jwtKeys)
@@ -38,7 +51,7 @@ export const check = async (token: string) => {
   if(!jwtKeys) return {
     err: 500,
     message: 'Error occured with the JWT keys cache',
-    keys: null,
+    decodedTkn: null,
   }
 
   verifiedTkn = verifyMap(token, jwtKeys)
@@ -48,7 +61,7 @@ export const check = async (token: string) => {
     message: 'Invalid token',
     decodedTkn: null,
   }
- 
+
   return {
     err: null,
     message: null,
