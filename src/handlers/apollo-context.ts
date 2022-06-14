@@ -4,19 +4,9 @@ import type { Request } from 'express'
 import type { Jwt } from 'jsonwebtoken'
 
 import { prisma } from '@lib/prisma-client'
-
 import { check } from '../auth/token-validation'
-
-if(!process.env.TUMEX_ROLE)
-  throw new Error('TUMEX_ROLE environment variable is not set')
-const tumexRole = process.env.TUMEX_ROLE
-
-if(!process.env.MIN_ROLE)
-  throw new Error('MIN_ROLE environment variable is not set')
-const minRole = process.env.MIN_ROLE
-
-const roleClaim = 'roles'
-const scopesClaim = 'scope'
+import { roleClaim, scopesClaim } from '@config/jwt-tkn'
+import { minRole, tumexRole } from '@config/env'
 interface Err {
    code: number
    message: string
