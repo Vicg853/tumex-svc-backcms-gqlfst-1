@@ -13,7 +13,6 @@ import { ApolloServer } from 'apollo-server-express'
 import { PrismaClient } from '@prisma/client'
 
 import { 
-   ApolloServerPluginLandingPageGraphQLPlayground,
    ApolloServerPluginLandingPageDisabled
 } from 'apollo-server-core'
 
@@ -33,10 +32,7 @@ export interface ApolloContext extends ApolloContextExtension {
 
 const apolloOpts: Config<ExpressContext> = {
    plugins: [
-      process.env.NODE_ENV === 'production' ? ApolloServerPluginLandingPageDisabled() 
-         : ApolloServerPluginLandingPageGraphQLPlayground({
-            endpoint: `${ROOT_PATH}graphqli`,
-         }),
+      ApolloServerPluginLandingPageDisabled() 
    ],
    introspection: process.env.NODE_ENV !== 'production',
 }
