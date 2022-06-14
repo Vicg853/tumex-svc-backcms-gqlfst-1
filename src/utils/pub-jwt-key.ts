@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import { createPublicKey, X509Certificate } from 'crypto'
 
 
 interface AUTH0Response {
@@ -29,7 +30,7 @@ type PromiseRes = ({
 export async function getPubJwtKey(): Promise<PromiseRes> {
   const auth0TenEndpoint = process.env.AUTH0_TENNANT_ENDPOINT 
     + '/.well-known/jwks.json'
-	
+	//@ts-ignore
   return await fetch(auth0TenEndpoint, {
     method: 'GET'
   }).then(async res => {
@@ -44,8 +45,8 @@ export async function getPubJwtKey(): Promise<PromiseRes> {
       const keysMap = jwks['keys'].filter(jwk => 
 	      jwk.kid !== undefined && jwk.kid !== null 
 	      && jwk.x5c.length > 0)
-	      .map(jwk => jwk.x5c[0]) 
-      
+	      .map(jwk => new X509Certificate(Buffer.from(jwk.x5c[0], 'base64')).toString()) 
+        
 	    if(keysMap.length === 0) return {
 	      err: 500,
 	      message: 'No valid JWKs were found',
