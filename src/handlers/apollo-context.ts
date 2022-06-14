@@ -119,8 +119,6 @@ export const context: ContextFunction<{req: Request}, ApolloContext> = async ({ 
     }
   }
 
-
-
   return { 
     prisma, 
     auth: {
