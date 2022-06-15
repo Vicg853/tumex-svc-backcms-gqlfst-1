@@ -15,7 +15,7 @@
     "cmd": "yarn install --frozen-lockfile --production=false"
   },
   "build": {
-    "cmd": "yarn build:all"
+    "cmd": "yarn build"
   },
   "start": {
     "cmd": "yarn start"
