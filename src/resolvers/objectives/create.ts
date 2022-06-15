@@ -5,17 +5,20 @@ import {
    Args,
    Resolver,
    Mutation,
-   Authorized,
    Ctx
 } from 'type-graphql'
 
 import {
    CreateObjectiveArgs
 } from './classes/createArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @Resolver()
 export class ObjectiveCreationResolvers {
-   @Authorized('is:tumex')
+   @AuthMiddle({
+      oneScope: [Scopes.objectivesCreate],
+   })
    @Mutation(_returns => Number, {
       nullable: false,
       description: 'Create a new objective.'

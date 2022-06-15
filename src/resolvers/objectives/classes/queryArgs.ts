@@ -1,12 +1,13 @@
 import { 
    ArgsType,
-   Authorized,
    Field
 } from 'type-graphql'
 
 import {
    ObjectivesGlobalFilter
 } from './filterArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 @ArgsType()
 export class ManyObjectivesQueryArgs {
    @Field(_type => ObjectivesGlobalFilter, {
@@ -24,7 +25,9 @@ export class QueryOneObjectiveArgs {
    })
    id?: string
 
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.objectivesHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Get if objectives\'s hidden'

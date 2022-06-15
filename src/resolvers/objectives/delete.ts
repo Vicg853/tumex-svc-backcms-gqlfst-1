@@ -5,13 +5,17 @@ import {
    Arg,
    Resolver,
    Mutation,
-   Authorized,
    Ctx
 } from 'type-graphql'
 
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
+
 @Resolver()
 export class ObjectiveRemoveResolvers {
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.objectivesDelete]
+   })
    @Mutation(_type => String, {
       nullable: false,
       description: 'Remove one or many objectives'
