@@ -6,7 +6,7 @@ export enum Scopes {
    objectivesHiddenEdit	= "objectives:hidden:edit",
    projectsRelEdit = "projects-relations:edit",
    projectsRelDelete	= "projects-relations:delete",
-   objectivesEedit = "objectives:edit",
+   objectivesEdit = "objectives:edit",
    objectivesDelete = "objectives:delete",
    projectsDelete	= "projects:delete",
    projectsEdit = "projects:edit",
