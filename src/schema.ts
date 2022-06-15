@@ -1,21 +1,50 @@
 import 'reflect-metadata'
-import { buildSchema } from 'type-graphql'
+import { buildSchemaSync } from 'type-graphql'
 
 import path from 'path'
 
-import { authChecker } from './auth'
+import {
+   CreateProjectsResolver,
+   ProjectsQueriesResolver,
+   ModifyProjectsResolver,
+   DeleteProjectsResolver,
+   ProjectsRelationQueryResolver,
+   CreateProjectRelationResolver
+} from './resolvers/projects'
 
 import {
-   ObjectivesResolver,
-   ProjectResolver
-} from './resolvers'
+   ObjectiveCreationResolvers,
+   ObjectivesQueriesResolver,
+   ObjectiveRemoveResolvers,
+} from './resolvers/objectives/index'
 
-export const schemaGen = async () => await buildSchema({
+import {
+   TechCreateResolver,
+   TechQueryResolver,
+   TechDeleteResolver,
+   CreateTechInProjResolver,
+   DeleteTechsInProjResolver
+} from './resolvers/techs'
+
+export const schema = buildSchemaSync({
    resolvers: [
-      ObjectivesResolver,
-      ProjectResolver
+      CreateProjectsResolver,
+      ProjectsQueriesResolver,
+      ModifyProjectsResolver,
+      DeleteProjectsResolver,
+      ProjectsRelationQueryResolver,
+      CreateProjectRelationResolver,
+      ObjectiveCreationResolvers,
+      ObjectivesQueriesResolver,
+      ObjectiveRemoveResolvers,
+      TechCreateResolver,
+      TechQueryResolver,
+      TechDeleteResolver,
+      CreateTechInProjResolver,
+      DeleteTechsInProjResolver
    ],
-   emitSchemaFile: path.resolve(__dirname, '../generated-schema.graphql'),
-   authChecker,
+   emitSchemaFile: process.env.NODE_ENV !== 'production' ?
+	path.resolve(__dirname, '../generated-schema.graphql')
+	: false,
    validate: true
 })

@@ -1,0 +1,6 @@
+export { CreateProjectsResolver } from './create'
+export { ProjectsQueriesResolver } from './queries'
+export { ModifyProjectsResolver } from './modify'
+export { DeleteProjectsResolver } from './delete'
+export { ProjectsRelationQueryResolver } from './relQuery'
+export { CreateProjectRelationResolver } from './createRel'

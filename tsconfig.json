@@ -1,9 +1,9 @@
 {
    "compilerOptions": {
      "outDir": "dist",
-     "lib": ["ESNext", "ESNext.AsyncIterable"],
+     "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
      "incremental": true,
-     "target": "es2018",
+     "target": "ESNext",
      "module": "commonjs",
      "strict": true,
      "esModuleInterop": true,
@@ -15,8 +15,15 @@
      "baseUrl": ".",
      "paths": {
         "~/*": ["./src/*"],
-        "@prisma-gen/*": ["./prisma/generated/*"],
-        "@lib/*": ["./src/lib/*"],
+         "@prisma-gen/*": ["./prisma/generated/*"],
+         "@lib/*": ["./src/lib/*"],
+         "@utils/*": ["./src/utils/*"],
+         "@c-types/*": ["./src/types/*"],
+         "@resolvers/*": ["./src/resolvers/*"],
+         "@handlers/*": ["./src/handlers/*"],
+         "@middlewares/*": ["./src/middlewares/*"],
+         "@config/*": ["./src/config/*"],
+         "@auth/*": ["./src/auth/*"],
      }
    },
    "include": [

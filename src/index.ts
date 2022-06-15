@@ -1,13 +1,18 @@
+import { config as dotenv } from 'dotenv'
+
+dotenv({
+   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+})
+
 import 'reflect-metadata'
+import type { ApolloContextExtension } from './handlers/apollo-context'
 import type { Config } from 'apollo-server-core'
 import type { ExpressContext, ServerRegistration } from 'apollo-server-express'
 
-import { config as dotenv } from 'dotenv'
 import { ApolloServer } from 'apollo-server-express'
 import { PrismaClient } from '@prisma/client'
 
 import { 
-   ApolloServerPluginLandingPageGraphQLPlayground,
    ApolloServerPluginLandingPageDisabled
 } from 'apollo-server-core'
 
@@ -15,28 +20,21 @@ import { formatError } from './handlers/apollo-response'
 import { context } from './handlers/apollo-context'
 import { app } from './express'
 
-//* Env init
-dotenv({
-   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-})
-
 //* Declaring/checking env based vars
 const PORT: number = parseInt(process.env.PORT ?? '4000', 10)
 const HOST: string = process.env.HOST ?? '0.0.0.0'
 const ROOT_PATH: string = process.env.ROOT_PATH ?? '/'
 const CORS: (string | RegExp)[] = process.env.CORS?.split(',') ?? [/^victorgomez\.dev$/]
 
-export interface ApolloContext {
+export interface ApolloContext extends ApolloContextExtension {
    prisma: PrismaClient
 }
 
 const apolloOpts: Config<ExpressContext> = {
    plugins: [
-      process.env.NODE_ENV === 'production' ? ApolloServerPluginLandingPageDisabled() 
-         : ApolloServerPluginLandingPageGraphQLPlayground({
-            endpoint: `${ROOT_PATH}graphqli`,
-         }),
+      ApolloServerPluginLandingPageDisabled() 
    ],
+   introspection: process.env.NODE_ENV !== 'production',
 }
 const middlewareConfig: Omit<ServerRegistration, 'app'> = {
    path: ROOT_PATH,

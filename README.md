@@ -15,9 +15,10 @@ Hope you like it 😄!
 ### **Technologies**
 Project is created with:
 * Apollo the graphql server: v3.6.7
-* Prisma the Node.js and TypeScript ORM: v3.13.0
+* Prisma the Node.js and TypeScript ORM: v3.12.0
 * Express the back-end server framework: v4.18.1
 * Typescript magic: v4.6.4
+* type-graphql typescript interface: v1.1.1
 * For other secondary libs/fmwk, give a look into the [package.json](https://github.com/Vicg853/tumex-svc-backcms-gqlfst-1/blob/main/package.json) file
 
 ---
@@ -30,25 +31,29 @@ Project is created with:
   * **Before running...**
     > ... add at least a ``` .env ``` file with the following variables (optional but recomended)
   ```.env
-    PORT=4000
-    HOST='localhost'
-    ROOT_PATH='/'
+    PORT=... (e.g.: ``4000``)
+    HOST=... (e.g.: ```localhost``)
+    ROOT_PATH=... (e.g.: ``/``)
+    DB_URL=... (You must use MongoDB, e.g.: ```mongodb+srv://user:<pass>@localhost:5000/mydb```)
+
+    CORS=... (optional, e.g.: ``*``)
+    HTTP_CATS_URL=... (optional, e.g.: ```https://http.cat/``)
   ```
 
   * **...Development**
   ```bash
    cd ./tumex-svc-backcms-gqlfst-1
-   yarn dev 
+   yarn dev:all 
   ```
 
   * **...Production**
   ```bash
    cd ./tumex-svc-backcms-gqlfst-1
-   yarn build && yarn start
+   yarn build:all && yarn start
   ```
 
   * Access:
-  **Voila, now, you're ready to access it via [``` localhost:4000 ```](http://localhost:4000)** (unless ``.env`` values are modified)
+  **Voila, now, you're ready to access it via [``` localhost:4000 ```](http://localhost:4000)** (unless ``.env`` you defined a diferent value for PORT on your .env)
 
 ---
 
