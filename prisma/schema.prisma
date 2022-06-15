@@ -34,7 +34,7 @@ model Objectives {
   title       Locales
   description Locales
   progress    ObjectiveProgress
-  source      String
+  source      String?
 
   year        Int
 
