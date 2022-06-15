@@ -20,13 +20,21 @@ type AuthMiddlewareType = Partial<
   ignoreMinRole?: boolean
 }>
 
-export function Auth({
-  oneRole, roles,
-  oneScope, scopes,
-  ignoreMinRole = false,
-}: AuthMiddlewareType): MiddlewareFn {
+export function Auth(rulesRaw?: AuthMiddlewareType | undefined): MiddlewareFn {
   return async ({ context }, next) => {
+    const {
+      ignoreMinRole,
+      oneRole, oneScope,
+      roles, scopes
+    } = {
+      ...rulesRaw,
+      ignoreMinRole: (!rulesRaw || 
+        typeof rulesRaw.ignoreMinRole === 'undefined') 
+        ? false : rulesRaw.ignoreMinRole,
+    } as AuthMiddlewareType
+
     const ctx = context as ApolloContext
+
     if(!ctx.auth.authed) {
       if(ctx.auth.err) 
         throw new ApolloError('Error trying to check authorization. This is our fault don\'t whory', '500')
@@ -35,8 +43,7 @@ export function Auth({
       else 
         throw new ApolloError('Not authorized', '401')
     } 
-    console.log('usr.scopes', ctx.auth.scopes)
-    console.log('usr.roles', ctx.auth.roles)
+    
     if(ctx.auth.isTumex) 
       return next()
     if(!ctx.auth.hasMinRole
@@ -98,4 +105,4 @@ export function Auth({
   }
 }
 
-export const AuthMiddle = (props: AuthMiddlewareType) => UseMiddleware(Auth(props))
+export const AuthMiddle = (props?: AuthMiddlewareType | undefined) => UseMiddleware(Auth(props))
