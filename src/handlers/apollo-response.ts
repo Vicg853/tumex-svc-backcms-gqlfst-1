@@ -10,8 +10,11 @@ export const formatError: Config['formatError'] = (error) => {
       }
    }
 
+   if(!error.extensions || !error.extensions.code) return defaultErr
+
+
    //* Auth related errors
-   if(error.message.startsWith('Access denied!')) return {
+   if(error.extensions.code === '401') return {
       message: 'Access denied!',
       path: error.path,
       extensions: {
@@ -19,14 +22,29 @@ export const formatError: Config['formatError'] = (error) => {
          httpCatCode: `${httpCatsUrl}/401`
       }
    }
-
+   else if(error.extensions.code === '498') return {
+      message: 'Invalid token',
+      path: error.path,
+      extensions: {
+         code: '498',
+	 httpCatCode: `${httpCatsUrl}/498`
+      }
+   } 
+   else if(error.extensions.code === '403') return {
+      message: 'Forbidden',
+      path: error.path,
+      extensions: {
+         code: '403',
+	 httpCatCode: `${httpCatsUrl}/403`
+      }
+   }
    
    //* Other errors
-   if(!error.extensions || !error.extensions.code) return defaultErr
-   else if(error.extensions.code === 'INTERNAL_SERVER_ERROR') {
+   if(error.extensions.code === 'INTERNAL_SERVER_ERROR'
+	|| error.extensions.code === '500') {
       console.error(JSON.stringify(error, null, 2))
       return {
-         message: 'Internal server error! This is our fault sorry!',
+         message: error.message ?? 'Internal server error! This is our fault sorry!',
          extensions: {
             httpCatCode: `${httpCatsUrl}/500`
          }

@@ -1,6 +1,9 @@
 import type { ProjectsFullResultType } from '../types'
 
-import { Authorized, ObjectType, Field } from 'type-graphql'
+import { 
+   ObjectType, 
+   Field 
+} from 'type-graphql'
 import {
    Resource,
    Locales,
@@ -8,20 +11,19 @@ import {
    Techs
 } from '@prisma-gen/type-graphql'
 
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
+
 @ObjectType({
    isAbstract: true
 })
 export class ProjectResult {
-   //TODO Revise auth scopes
-   @Authorized("SUDO")
    @Field(_type => String, {
       nullable: false,
       description: "The project's id"
    })
    id!: ProjectsFullResultType['id']
 
-   //TODO Revise auth scopes
-   @Authorized("SUDO")
    @Field(_type => String, {
       nullable: false,
       description: "The project's createdAt date"
@@ -88,8 +90,9 @@ export class ProjectResult {
    })
    endDate?: ProjectsFullResultType['endDate'];
 
-   //TODO Revise auth scopes
-   @Authorized("SUDO")
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: false,
       description: "The project's hidden status. Requires special permissions."

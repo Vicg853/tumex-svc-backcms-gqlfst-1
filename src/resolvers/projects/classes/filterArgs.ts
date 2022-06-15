@@ -1,13 +1,14 @@
 import { 
    ArgsType, 
-   Authorized, 
    Field, 
    InputType
 } from 'type-graphql'
-
 import {
    ProjectScopes
 } from '@prisma-gen/type-graphql'
+
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @InputType('AmountFilter', { 
    isAbstract: true 
@@ -42,16 +43,19 @@ export class ProjectOpacityRelatedFilters {
    })
    onlyArchived?: boolean
 
-   //TODO Revise auth scopes
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: "If true, returns only hidden projects. Overrides \"includeHidden\". Requires special permissions."
    })
    onlyHidden?: boolean
-
-   //TODO Revise auth scopes
-   @Authorized('SUDO')
+   
+   
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: "If true, returns archived and non-archived projects. Requires special permissions."

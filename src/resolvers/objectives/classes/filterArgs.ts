@@ -1,17 +1,19 @@
+import type {
+   ObjectiveMainType
+} from '../types'
+
 import { 
    ArgsType,
-   Authorized,
    Field, 
    InputType
 } from 'type-graphql'
 
-import {
-   ObjectiveMainType
-} from '../types'
 
 import {
    ObjectiveProgress
 } from '@prisma-gen/type-graphql'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @InputType() 
 class ManyProjectFilterConditions {
@@ -49,14 +51,18 @@ class ManyProjectFilterOptions extends ManyProjectFilterConditions {
 @InputType()
 @ArgsType()
 export class ObjectivesGlobalFilter extends ManyProjectFilterOptions {
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.objectivesHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Filter by only hidden objectives'
    })
    onlyHidden?: boolean
 
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.objectivesHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Include hidden objectives'

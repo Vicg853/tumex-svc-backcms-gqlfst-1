@@ -1,7 +1,7 @@
 import type { ApolloContext } from '~/index'
 
 import { ApolloError } from 'apollo-server-core'
-import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql'
+import { Args, Ctx, Mutation, Resolver } from 'type-graphql'
 
 import {
    ProjectResult,
@@ -11,11 +11,14 @@ import {
    ModProjectArgs,
    ModProjectsOpacityArgs
 } from './classes/modArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @Resolver()
 export class ModifyProjectsResolver {
-   //TODO: Revise auth scopes
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.projectsEdit]
+   })
    @Mutation(_returns => ProjectResultAndRels, {
       nullable: true,
       description: 'Modify a project'
@@ -99,7 +102,9 @@ export class ModifyProjectsResolver {
       return prismaRes.data
    }
    
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenEdit]
+   })
    @Mutation(_returns => String, {
       nullable: true,
       description: 'Modify one or many projects opacity'

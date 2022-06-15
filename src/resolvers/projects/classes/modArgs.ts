@@ -1,16 +1,24 @@
 import type { ProjectsFullResultType } from '../types'
 
-import { Field, ArgsType, InputType, ClassType, Authorized } from 'type-graphql'
+import { 
+   Field, 
+   ArgsType, 
+   InputType, 
+   ClassType 
+} from 'type-graphql'
 import {
    ResourceCreateInput,
    LocalesCreateInput,
    ProjectScopes
 } from '@prisma-gen/type-graphql'
+
 import {
    ModProjToProjRelated,
    ModProjToProjAsRelatee,
    ModProjectTechStack
 } from './relModArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 export interface ArrayModifyInputClassType {
    setTo: any[]
@@ -135,16 +143,15 @@ class ProjectAndRelationsModData extends ModProjectData {
    isAbstract: true
 })
 class ProjectOpacityRelatedUpdates {
-   //TODO Check auth scopes
-   @Authorized("is:tumex")
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenEdit]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Project\'s visibility'
    })
    hidden?: boolean
 
-   //TODO Check auth scopes
-   @Authorized("is:tumex")
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Project\'s archive state'
@@ -181,6 +188,9 @@ export class ModProjectsOpacityArgs {
    })
    ids?: string[]
 
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenEdit]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Project(s)\'s visibility'

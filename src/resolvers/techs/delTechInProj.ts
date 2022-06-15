@@ -4,8 +4,7 @@ import {
   Ctx,
   Args,
   Resolver,
-  Mutation,
-  Authorized
+  Mutation
 } from 'type-graphql'
 import { ApolloError } from 'apollo-server-core'
 
@@ -13,11 +12,15 @@ import {
    DeleteTechsInProjArgs,
    DeleteProjsTechsArgs,
 } from './classes/relDelArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 
 @Resolver()
 export class DeleteTechsInProjResolver {
-  @Authorized("SUDO")
+  @AuthMiddle({
+    scopes: [Scopes.techEdit]
+  })
   @Mutation(() => String, {
     nullable: true,
     description: 'Delete a tech(s) from project(s) realtion (remove tech(s) from project(s).'
@@ -44,7 +47,9 @@ export class DeleteTechsInProjResolver {
      return `${prismaRes.count} projects unlinked from tech.`
   }
 
-  @Authorized("SUDO")
+  @AuthMiddle({
+    scopes: [Scopes.projectsEdit]
+  })
   @Mutation(() => String, {
     nullable: true,
     description: 'Remove tech(s) link(s) from a project.'

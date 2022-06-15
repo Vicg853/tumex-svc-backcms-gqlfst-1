@@ -5,15 +5,18 @@ import {
   Resolver,
   Ctx,
   Mutation,
-  Args,
-  Authorized
+  Args
 } from 'type-graphql'
 
 import { CreateTechInProjArgs } from './classes/relCreateArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @Resolver()
 export class CreateTechInProjResolver {
-  @Authorized("SUDO")
+  @AuthMiddle({
+    scopes: [Scopes.projectsEdit]
+  })
   @Mutation(() => [String], {
     nullable: true,
     description: 'Create a new tech(s) in project(s) realtion (append tech(s) to project(s).'

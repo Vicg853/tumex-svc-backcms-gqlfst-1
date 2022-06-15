@@ -3,7 +3,6 @@ import {
    ObjectiveProgress
 } from '@prisma-gen/type-graphql'
 import {
-   Authorized,
    Field,
    ObjectType
 } from 'type-graphql'
@@ -11,6 +10,8 @@ import {
 import {
    ObjectiveMainType
 } from '../types'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @ObjectType()
 export class ObjectiveQueryFields {
@@ -56,7 +57,9 @@ export class ObjectiveQueryFields {
    })
    progress?: ObjectiveMainType['progress']
 
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.objectivesHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Get if objectives\'s hidden'
