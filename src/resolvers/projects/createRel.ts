@@ -4,9 +4,14 @@ import { Mutation, Ctx, Args, Resolver } from 'type-graphql'
 import { ApolloError } from 'apollo-server-core'
 
 import { ProjectRelationCreate } from './classes/relCreateArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @Resolver()
 export class CreateProjectRelationResolver {
+   @AuthMiddle({
+      scopes: [Scopes.projectsRelEdit, Scopes.projectsEdit]
+   })
    @Mutation(_returns => String, {
       nullable: true,
       description: 'Creates project(s) relation(s)'   

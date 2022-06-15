@@ -2,7 +2,7 @@ import type { ApolloContext } from '~/index'
 import type { ProjectsFullResultType } from './types'
 
 import { ApolloError } from 'apollo-server-core'
-import { Field, InputType, ArgsType, Resolver, Mutation, Ctx, Args, Authorized } from 'type-graphql'
+import { Field, InputType, ArgsType, Resolver, Mutation, Ctx, Args } from 'type-graphql'
 import {
    ProjectScopes,
    LocalesCreateInput,
@@ -10,6 +10,8 @@ import {
 } from '@prisma-gen/type-graphql'
 
 import { ProjectResultAndRels } from './classes/queryFields'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @InputType()
 @ArgsType()
@@ -113,7 +115,9 @@ class CreateManyProjectsArgs {
 @Resolver()
 export class CreateProjectsResolver {
    //TODO Revise auth scopes
-   @Authorized("SUDO")
+   @AuthMiddle({
+      scopes: [Scopes.projectsCreate]
+   })
    @Mutation(_returns => ProjectResultAndRels, {
       name: 'createProject',
       nullable: true,
@@ -172,7 +176,9 @@ export class CreateProjectsResolver {
       return create.data
    }
 
-   @Authorized("SUDO")
+   @AuthMiddle({
+      scopes: [Scopes.projectsCreate]
+   })
    @Mutation(_returns => Number, {
       name: 'createManyProjects',
       nullable: true,

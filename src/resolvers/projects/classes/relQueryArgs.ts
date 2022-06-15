@@ -1,8 +1,15 @@
-import { ArgsType, Authorized, Field, InputType, registerEnumType } from 'type-graphql'
+import { 
+   ArgsType, 
+   Field, 
+   InputType, 
+   registerEnumType 
+} from 'type-graphql'
 
 import {
    ProjGlobalFilterArgsInputT
 } from './filterArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @InputType()
 class ProjToProjRelationFilters extends ProjGlobalFilterArgsInputT {
@@ -12,8 +19,9 @@ class ProjToProjRelationFilters extends ProjGlobalFilterArgsInputT {
    })
    includeArchivedRelated?: boolean
 
-   //TODO Revise auth scopes
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Include or not hidden related or relatee projects (based on grouping method)'
@@ -26,8 +34,9 @@ class ProjToProjRelationFilters extends ProjGlobalFilterArgsInputT {
    })
    onlyArchivedRelated?: boolean
 
-   //TODO Revise auth scopes
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Only include or not hidden related or relatee projects (based on grouping method)'

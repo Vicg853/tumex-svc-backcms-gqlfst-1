@@ -1,17 +1,20 @@
 import type { ApolloContext } from '~/index'
 
 import { ApolloError } from 'apollo-server-core'
-import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql'
+import { Args, Ctx, Mutation, Resolver } from 'type-graphql'
 
 import { 
    DelProjectsArgs,
    DelProjectsRelArgs
 } from './classes/delArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @Resolver()
 export class DeleteProjectsResolver {
-   //TODO: Revise auth scopes
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.projectsDelete]
+   })
    @Mutation(_returns => String, {
       nullable: true,
       description: 'Deletes a/many project(s)'
@@ -43,7 +46,9 @@ export class DeleteProjectsResolver {
       return `Deleted ${prismaRes.count} project(s)`
    }
    
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.projectsRelDelete]
+   })
    @Mutation(_returns => String, {
       nullable: true,
       description: 'Deletes project to project relations for the given project id.'
