@@ -2,9 +2,11 @@ import type { TechsType } from '../types'
 
 import {
    Field,
-   ObjectType,
-   Authorized
+   ObjectType
 } from 'type-graphql'
+
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @ObjectType()
 export class QueryFields {
@@ -56,8 +58,9 @@ export class QueryFields {
    })
    listAsSkill?: TechsType['listAsSkill']
 
-   //TODO Check auth scopes
-   @Authorized("SUDO")
+   @AuthMiddle({
+      scopes: [Scopes.techHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Defined initial hidden state. (if true it will not only be hidden in projects stacks, but also in the skills list).'

@@ -1,7 +1,6 @@
 import type { ApolloContext } from '~/index'
 
 import { ApolloError } from 'apollo-server-core'
-
 import {
   Ctx, 
   Mutation,
@@ -9,8 +8,14 @@ import {
   Resolver
 } from 'type-graphql'
 
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
+
 @Resolver()
 export class TechDeleteResolver {
+  @AuthMiddle({
+    scopes: [Scopes.techDelete]
+  })
   @Mutation(() => String)
   async deleteTech(
     @Ctx() ctx: ApolloContext,

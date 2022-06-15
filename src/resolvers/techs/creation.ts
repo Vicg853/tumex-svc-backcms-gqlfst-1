@@ -3,7 +3,6 @@ import type { ApolloContext } from '~/index'
 import { ApolloError } from 'apollo-server-core'
 import {
    Args,
-   Authorized,
    Ctx,
    Mutation,
    Resolver
@@ -12,11 +11,14 @@ import {
 import {
    CreateTechArgs
 } from './classes/createArgs'
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @Resolver()
 export class TechCreateResolver {
-   //TODO check auth scopes
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.techCreate]
+   })
    @Mutation(_type => String, {
       description: 'Create a new technologies'
    })

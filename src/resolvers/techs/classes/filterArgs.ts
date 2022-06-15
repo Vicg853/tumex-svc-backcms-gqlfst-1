@@ -1,52 +1,57 @@
 import {
    InputType,
    Field,
-   Authorized,
    ClassType,
    ArgsType
 } from 'type-graphql'
 
+import { AuthMiddle } from '@middlewares/auth'
+import { Scopes } from '@config/jwt-tkn'
 
 @ArgsType()
 export class TechBasicSharedFilters {
-   //TODO Revise auth scopes
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.techHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: "If true, returns only hidden techs. Overrides \"includeHidden\". Requires special permissions."
    })
    onlyHidden?: boolean
 
-   //TODO Revise auth scopes
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.techHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: "If true, returns archived and non-archived techs. Requires special permissions."
    })
    includeHidden?: boolean
 
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Filter by related project hidden state',
    })
    relProjHidden?: boolean
 
-   @Authorized('SUDO')
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Filter by related project archived state',
    })
    relProjArchived?: boolean
 
-   @Authorized('SUDO')
+   @AuthMiddle({
+      scopes: [Scopes.projectsHiddenRead]
+   })
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Filter by only hidden related projects',      
    })
    onlyHiddenRelProj?: boolean
 
-   @Authorized('SUDO')
    @Field(_type => Boolean, {
       nullable: true,
       description: 'Filter by only archived related projects',
