@@ -18,4 +18,7 @@ export enum Scopes {
    techDelete	=  "tech:delete",
    schemaRead =  "schema:read",
    baseaccess = "baseaccess",
+   projectsCreate = "projects:create",
+   objectivesCreate = "objectives:create",
+   techCreate = "tech:create",
 }
