@@ -31,8 +31,6 @@ export class ObjectiveCreationResolvers {
       const inputCheck = input.some(i => {
          if ((!globalInput || !globalInput.progress) && !i.progress) 
             return missingInput = 'progress'
-         if ((!globalInput || !globalInput.source) && !i.source) 
-            return missingInput = 'source'
          if ((!globalInput || !globalInput.year) && !i.year) 
             return missingInput = 'year'
       })
