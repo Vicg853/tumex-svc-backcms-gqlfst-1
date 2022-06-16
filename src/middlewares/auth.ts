@@ -16,28 +16,20 @@ type UserAtLeastOneRequirements = RequireOnlyOne<{
 
 type AuthMiddlewareType = Partial< 
   UserRequirements & 
-  UserAtLeastOneRequirements & {
-  ignoreMinRole?: boolean
-}>
+  UserAtLeastOneRequirements>
 
 export function Auth(rulesRaw?: AuthMiddlewareType | undefined): MiddlewareFn {
   return async ({ context }, next) => {
     const {
-      ignoreMinRole,
       oneRole, oneScope,
       roles, scopes
-    } = {
-      ...rulesRaw,
-      ignoreMinRole: (!rulesRaw || 
-        typeof rulesRaw.ignoreMinRole === 'undefined') 
-        ? false : rulesRaw.ignoreMinRole,
-    } as AuthMiddlewareType
+    } = rulesRaw as AuthMiddlewareType
 
     const ctx = context as ApolloContext
 
     if(!ctx.auth.authed) {
       if(ctx.auth.err) 
-        throw new ApolloError('Error trying to check authorization. This is our fault don\'t whory', '500')
+        throw new ApolloError('Error trying to check authorization. This is our fault don\'t worry', '500')
       else if(ctx.auth.invalidTkn)
 	      throw new ApolloError('Invalid token', '498')
       else 
@@ -46,9 +38,6 @@ export function Auth(rulesRaw?: AuthMiddlewareType | undefined): MiddlewareFn {
     
     if(ctx.auth.isTumex) 
       return next()
-    if(!ctx.auth.hasMinRole
-      && !ignoreMinRole)
-      throw new ApolloError('Not authorized', '403')
       
     if(!oneRole && !roles
       && !oneScope && !scopes)
