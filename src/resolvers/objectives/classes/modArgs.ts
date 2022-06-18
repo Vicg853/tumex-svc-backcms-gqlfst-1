@@ -70,11 +70,11 @@ export class ObjectiveModFilterInput extends ObjectiveModFilterCondInput {
 
 @ArgsType()
 export class ObjectiveBulkModArgs {
-   @Field(() => String, {
+   @Field(() => [String], {
       description: 'Objectives\' IDs to modify. Can be only. If neither it or a filter are specified, all objectives will be modified.',
       nullable: true,
    })
-   ids?: ObjectiveMainType['id']
+   ids?: ObjectiveMainType['id'][]
    
    @Field(() => ObjectiveModFilterInput, {
       description: 'Filter objectives that should be modified. e.g.: \'{ year: 2022 }\' as filter will update all objectives with 2022 year value.',

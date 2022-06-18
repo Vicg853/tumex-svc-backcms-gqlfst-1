@@ -89,6 +89,7 @@ export class ObjectiveModResolver {
       if(prismaRes.err !== null) 
          throw new Error(prismaRes.message, prismaRes.err)
 
-      return `Updated ${prismaRes.count} objective${prismaRes.count! > 1 ? 's' : ''} opacity`
+      return prismaRes.count! > 0 ? `Updated ${prismaRes.count} objective${prismaRes.count! > 1 ? 's' : ''}.` 
+         : 'No objectives were updated.'
    }
 }
