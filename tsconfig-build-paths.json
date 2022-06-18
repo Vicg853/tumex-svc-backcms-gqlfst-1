@@ -12,7 +12,8 @@
          "@handlers/*": ["./dist/src/handlers/*"],
          "@middlewares/*": ["./dist/src/middlewares/*"],
          "@config/*": ["./dist/src/config/*"],
-         "@auth/*": ["./dist/src/auth/*"]
+         "@auth/*": ["./dist/src/auth/*"],
+         "@resolver-shared/*": ["./dist/src/resolvers/shared/*"]
       }
    }
 }
