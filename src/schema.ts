@@ -16,7 +16,8 @@ import {
    ObjectiveCreationResolvers,
    ObjectivesQueriesResolver,
    ObjectiveRemoveResolvers,
-} from './resolvers/objectives/index'
+   ObjectiveModResolver
+} from './resolvers/objectives'
 
 import {
    TechCreateResolver,
@@ -41,7 +42,8 @@ export const schema = buildSchemaSync({
       TechQueryResolver,
       TechDeleteResolver,
       CreateTechInProjResolver,
-      DeleteTechsInProjResolver
+      DeleteTechsInProjResolver,
+      ObjectiveModResolver
    ],
    emitSchemaFile: process.env.NODE_ENV !== 'production' ?
 	path.resolve(__dirname, '../generated-schema.graphql')

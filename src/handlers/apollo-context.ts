@@ -71,17 +71,24 @@ export const context: ContextFunction<{req: Request}, ApolloContext> = async ({ 
 
   const payload = typeof decodedTkn.payload === 'string' ? 
     JSON.parse(decodedTkn.payload) : decodedTkn.payload
-  console.log(payload)
+  
+  const scopes = !(scopesClaim in payload) ? null 
+    : Array.isArray(payload[scopesClaim]) ? 
+      payload[scopesClaim] as string[] 
+      : payload[scopesClaim].split(',') as string[]
+
+  const roles = !(roleClaim in payload) ? null 
+    : Array.isArray(payload[roleClaim]) ? 
+      payload[roleClaim] as string[] 
+      : payload[roleClaim].split(',') as string[]
+  
   return { 
     prisma, 
     auth: {
       token: { original: token, decoded: decodedTkn },
-      scopes: !(scopesClaim in payload) ? null : 
-	     payload[scopesClaim].split(' '),
-      roles: !(roleClaim in payload) ? null :
-        payload[roleClaim].split(' '),
-      isTumex: (scopesClaim in payload && 
-      payload[scopesClaim].includes(tumexRole)) ? true : false,
+      scopes: scopes ?? null,
+      roles: roles ?? null,
+      isTumex: scopes?.includes(tumexRole) ? true : false,
       authed: true,
       invalidTkn: false,
       err: null,
