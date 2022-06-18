@@ -27,7 +27,6 @@ export class ObjectiveModResolver {
    @Mutation(() => ObjectiveQueryFields, {
       description: 'Update an objective',
       nullable: false,
-      name: 'modObjective'
    })
    async modObjective(
       @Ctx() ctx: ApolloContext,
@@ -58,7 +57,6 @@ export class ObjectiveModResolver {
    @Mutation(() => String, {
       description: 'Update an objective',
       nullable: false,
-      name: 'modObjective'
    })
    async modObjectiveBulk(
       @Ctx() ctx: ApolloContext,
