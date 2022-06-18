@@ -3,7 +3,7 @@ import {
    ArgsType,
    InputType
 } from 'type-graphql'
-import { Locales, ObjectiveProgress } from '@prisma-gen/type-graphql'
+import { ObjectiveProgress } from '@prisma-gen/type-graphql'
 
 import { 
    ObjectiveMainType, 
@@ -113,6 +113,27 @@ export class ObjectiveBulkModArgs {
 //*--------------------------------------------------------------------------
 //*-- Individual objective mod args base class
 
+@InputType()
+class LocaleUpdateFields {
+   @Field(() => String, {
+      description: 'English locale value to set.',
+      nullable: true,
+   })
+   en?: string
+
+   @Field(() => String, {
+      description: 'French locale value to set.',
+      nullable: true,
+   })
+   fr?: string | null
+
+   @Field(() => String, {
+      description: 'Brazilian portuguese locale value to set.',
+      nullable: true,
+   })
+   pt?: string | null
+}
+
 @ArgsType()
 @InputType({
    description: 'Objective modification input type.'
@@ -124,13 +145,13 @@ export class ObjectiveModInput {
    })
    id!: ObjectiveMainType['id']
 
-   @Field(() => Locales, {
+   @Field(() => LocaleUpdateFields, {
       description: 'Objective\'s title to modify.',
       nullable: true,
    })
    title?: ObjectiveMainType['title']
 
-   @Field(() => Locales, {
+   @Field(() => LocaleUpdateFields, {
       description: 'Objective\'s description to modify.',
       nullable: true,
    })
@@ -164,3 +185,37 @@ export class ObjectiveModInput {
    hidden?: ObjectiveMainType['hidden']
 }
 
+//*--------------------------------------------------------------------------
+//*-- Many objectives mod args
+
+@InputType({
+   description: 'Objective shared modification input type. Used to mofify a same value for multiple objectives.'
+})
+export class ObjectiveModSharedInput {
+   @Field(() => Number, {
+      description: 'Year value to set.',
+      nullable: true,
+   })
+   year?: number
+
+   @Field(() => ObjectiveProgress, {
+      description: 'Progress value to set.',
+      nullable: true,
+   })
+   progress?: ObjectiveProgressType
+}
+
+@ArgsType()
+export class ManyObjectivesModArgs {
+   @Field(() => [ObjectiveModInput], {
+      description: 'Objectives array to modify.',
+      nullable: false,
+   })
+   data!: ObjectiveModInput[]
+
+   @Field(() => ObjectiveModSharedInput, {
+      description: 'Objectives shared modification data. Optional',
+      nullable: true,
+   })
+   shared?: ObjectiveModSharedInput
+}

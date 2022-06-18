@@ -34,7 +34,11 @@ export class ObjectiveModResolver {
    ): Promise<ObjectiveQueryFields | null> {
       const prismaRes = await ctx.prisma.objectives.update({
          where: { id },
-         data
+         data: {
+            ...data,
+            ...(data.title && {title: { update: data.title }}),
+            ...(data.description && {description: { update: data.description }}),
+         }
       }).then(data => ({
          data,
          err: null,
