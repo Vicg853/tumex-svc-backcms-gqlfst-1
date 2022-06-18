@@ -140,7 +140,7 @@ class LocaleUpdateFields {
 })
 export class ObjectiveModInput {
    @Field(() => String, {
-      description: 'Objective\'s ID to modify.',
+      description: 'Objective\'s ID to be updated.',
       nullable: false,
    })
    id!: ObjectiveMainType['id']
@@ -203,6 +203,12 @@ export class ObjectiveModSharedInput {
       nullable: true,
    })
    progress?: ObjectiveProgressType
+
+   @Field(() => Boolean, {
+      description: 'Hidden state to set.',
+      nullable: true,
+   })
+   hidden?: boolean
 }
 
 @ArgsType()
