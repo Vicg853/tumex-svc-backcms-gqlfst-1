@@ -71,7 +71,7 @@ export const context: ContextFunction<{req: Request}, ApolloContext> = async ({ 
 
   const payload = typeof decodedTkn.payload === 'string' ? 
     JSON.parse(decodedTkn.payload) : decodedTkn.payload
-  console.log(payload)
+  
   return { 
     prisma, 
     auth: {
