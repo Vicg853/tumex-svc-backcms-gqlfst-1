@@ -3,7 +3,7 @@ import {
    ArgsType,
    InputType
 } from 'type-graphql'
-import { ObjectiveProgress } from '@prisma-gen/type-graphql'
+import { Locales, ObjectiveProgress } from '@prisma-gen/type-graphql'
 
 import { 
    ObjectiveMainType, 
@@ -124,13 +124,13 @@ export class ObjectiveModInput {
    })
    id!: ObjectiveMainType['id']
 
-   @Field(() => String, {
+   @Field(() => Locales, {
       description: 'Objective\'s title to modify.',
       nullable: true,
    })
    title?: ObjectiveMainType['title']
 
-   @Field(() => String, {
+   @Field(() => Locales, {
       description: 'Objective\'s description to modify.',
       nullable: true,
    })
@@ -163,3 +163,4 @@ export class ObjectiveModInput {
    })
    hidden?: ObjectiveMainType['hidden']
 }
+
