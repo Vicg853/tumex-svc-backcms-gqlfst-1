@@ -5,7 +5,7 @@ import type { Jwt } from 'jsonwebtoken'
 
 import { prisma } from '@lib/prisma-client'
 import { check } from '../auth/token-validation'
-import { roleClaim, scopesClaim } from '@config/jwt-tkn'
+import { roleClaim, scopesClaim, machineScopesClaim } from '@config/jwt-tkn'
 import { tumexRole } from '@config/env'
 interface Err {
    code: number
@@ -72,15 +72,18 @@ export const context: ContextFunction<{req: Request}, ApolloContext> = async ({ 
   const payload = typeof decodedTkn.payload === 'string' ? 
     JSON.parse(decodedTkn.payload) : decodedTkn.payload
   
-  const scopes = !(scopesClaim in payload) ? null 
-    : Array.isArray(payload[scopesClaim]) ? 
-      payload[scopesClaim] as string[] 
-      : payload[scopesClaim].split(',') as string[]
+  const whichScoClaim = scopesClaim in payload ? scopesClaim
+   : machineScopesClaim in payload ? machineScopesClaim : null
 
-  const roles = !(roleClaim in payload) ? null 
-    : Array.isArray(payload[roleClaim]) ? 
-      payload[roleClaim] as string[] 
-      : payload[roleClaim].split(',') as string[]
+  const scopes = typeof whichScoClaim === null ? null 
+    : Array.isArray(payload[whichScoClaim!]) ? 
+      payload[whichScoClaim!] as string[] 
+      : payload[whichScoClaim!].split(',') as string[]
+
+  const roles = typeof whichScoClaim === null ? null 
+    : Array.isArray(payload[whichScoClaim!]) ? 
+      payload[whichScoClaim!] as string[] 
+      : payload[whichScoClaim!].split(',') as string[]
   
   return { 
     prisma, 
