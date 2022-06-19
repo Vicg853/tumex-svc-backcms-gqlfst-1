@@ -4,7 +4,7 @@ import { printSchema, lexicographicSortSchema } from 'graphql'
 
 import { check } from './auth/token-validation'
 import { schema } from './schema'
-import { roleClaim, scopesClaim, Scopes } from '@config/jwt-tkn'
+import { scopesClaim, Scopes } from '@config/jwt-tkn'
 import { tumexRole } from '@config/env'
 
 const app = express()
@@ -34,9 +34,9 @@ app.route('/schema').get(async (req, res) => {
 
    const payload = typeof decodedTkn.payload === 'string' ?
       JSON.parse(decodedTkn.payload) : decodedTkn.payload
-
-   const hasTumexRole = (roleClaim in payload && 
-      payload[roleClaim].includes(tumexRole)) ? true : false
+   
+   const hasTumexRole = (scopesClaim in payload && 
+      payload[scopesClaim].includes(tumexRole)) ? true : false
    const hasRequiredScopes = scopesClaim in payload && 
       !!payload[scopesClaim].includes(Scopes.schemaRead)
    

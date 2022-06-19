@@ -24,6 +24,7 @@
          "@middlewares/*": ["./src/middlewares/*"],
          "@config/*": ["./src/config/*"],
          "@auth/*": ["./src/auth/*"],
+         "@resolver-shared/*": ["./src/resolvers/shared/*"]
      }
    },
    "include": [
