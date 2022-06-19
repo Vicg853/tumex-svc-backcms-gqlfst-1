@@ -4,7 +4,7 @@ import { printSchema, lexicographicSortSchema } from 'graphql'
 
 import { check } from './auth/token-validation'
 import { schema } from './schema'
-import { scopesClaim, Scopes } from '@config/jwt-tkn'
+import { machineScopesClaim, scopesClaim, Scopes } from '@config/jwt-tkn'
 import { tumexRole } from '@config/env'
 
 const app = express()
@@ -35,10 +35,14 @@ app.route('/schema').get(async (req, res) => {
    const payload = typeof decodedTkn.payload === 'string' ?
       JSON.parse(decodedTkn.payload) : decodedTkn.payload
    
-   const hasTumexRole = (scopesClaim in payload && 
-      payload[scopesClaim].includes(tumexRole)) ? true : false
-   const hasRequiredScopes = scopesClaim in payload && 
-      !!payload[scopesClaim].includes(Scopes.schemaRead)
+   
+   const whichScoClaim = scopesClaim in payload ? scopesClaim
+      : machineScopesClaim in payload ? machineScopesClaim : null
+
+   const hasTumexRole = typeof whichScoClaim !== null &&
+      payload[whichScoClaim!].includes(tumexRole) ? true : false
+   const hasRequiredScopes = typeof whichScoClaim !== null &&
+   payload[whichScoClaim!].includes(Scopes.schemaRead) ? true : false
    
    if(!hasTumexRole && !hasRequiredScopes)
      return res.status(403).send('Forbidden')
