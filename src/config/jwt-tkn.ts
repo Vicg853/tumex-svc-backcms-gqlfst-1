@@ -1,5 +1,6 @@
 export const roleClaim = 'roles'
 export const scopesClaim = 'permissions'
+export const machineScopesClaim = 'scope'
 
 export enum Scopes {
    objectivesHiddenRead	= "cms:objectives:hidden:read",
