@@ -9,7 +9,6 @@
         "name": "yarn"
       }
     ],
-    "baseImage": "ghcr.io/railwayapp/nixpacks:debian-1654798583"
   },
   "install": {
     "cmd": "yarn install --frozen-lockfile --production=false"
