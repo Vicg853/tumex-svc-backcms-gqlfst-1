@@ -84,5 +84,4 @@
     "type-graphql": "^1.1.1",
     "typegraphql-prisma": "^0.20.1"
   },
-  "packageManager": "yarn@3.2.0"
 }
