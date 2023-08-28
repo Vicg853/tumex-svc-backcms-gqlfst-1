@@ -7,8 +7,7 @@
 ### **General info**
 Hi 👋! This is my main CMS data source. Well... it is not an usual CMS using WordPress, or other, but a from scratch custom one. Although, it isn't that of a big deal, is just a small preference... 
 
-Along that, my objective was to learn more about apollo, prisma and graphql. Although I'll probably not publish this source code, this README wi'll be probably public, as well as the API's endpoint (at least its public non-secured side).
-
+Along that, my objective was to learn more about apollo, prisma and graphql.
 Hope you like it 😄!
 
 ---
@@ -63,7 +62,6 @@ Still not implemented...
 ---
 
 ### **Credits**
-Contributors: [@vicg853](https://github.com/Vicg853)
 
 Special thanks to contributors/teams: 
 - at NodeJS's for an amazing runtime env
