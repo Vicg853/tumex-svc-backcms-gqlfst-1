@@ -34,10 +34,15 @@ export class TechStackModResolvers {
       if(!data || Object.keys(data).length === 0) 
          throw new ApolloError('No data to update', 'NO_DATA')
 
+      const data_parsed = {
+         ...data,
+         inProjects: undefined,
+      }
+      
       const prismaRes = await ctx.prisma.techs.update({
          where: { id },
          data: {
-            ...data,
+            ...data_parsed,
             ...(data.inProjects && {
                inProjects: {
                   ...(data.inProjects.omit && { deleteMany: { projectId: { in: data.inProjects.omit } } }),
@@ -76,11 +81,17 @@ export class TechStackModResolvers {
       if(!data || data.length === 0)
          throw new ApolloError('No data to update', 'NO_DATA')
 
-      const prismaTransaction = await ctx.prisma.$transaction(data.map(({ id, ...techData }) => 
+      const data_parsed = data.map((curr_data) => ({
+         ...curr_data,
+         inProjects: undefined,
+      }))
+      
+      const prismaTransaction = await ctx.prisma.$transaction(data.map(({ id, ...techData }, i) => 
          ctx.prisma.techs.update({
             where: { id },
+            
             data: {
-               ...techData,
+               ...(data_parsed[i]),
                hidden: typeof techData.hidden === 'boolean' ? techData.hidden 
                   : typeof shared?.hidden === 'boolean' ? shared.hidden : undefined,
                listAsSkill: typeof techData.listAsSkill === 'boolean' ? techData.listAsSkill
